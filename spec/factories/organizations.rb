@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :organization do
-    name { "MyString" }
-    slug { "MyString" }
-    status { "MyString" }
+    sequence(:name) { |n| "Test Organization #{n}" }
+    sequence(:slug) { |n| "test-organization-#{n}" }
+    status { "active" }
   end
 end
