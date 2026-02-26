@@ -23,12 +23,16 @@ class ApplicationController < ActionController::Base
     return unless user_signed_in?
 
     # Find organization from params or user's default
-    organization = if params[:organization_id]
-      current_user.organizations.find(params[:organization_id])
-    elsif params[:org_slug]
-      current_user.organizations.find_by!(slug: params[:org_slug])
-    else
-      current_user.organizations.first
+    # We need to bypass tenant requirement when fetching user's organizations
+    # because OrganizationMembership has acts_as_tenant :organization
+    organization = ActsAsTenant.without_tenant do
+      if params[:organization_id]
+        current_user.organizations.find(params[:organization_id])
+      elsif params[:org_slug]
+        current_user.organizations.find_by!(slug: params[:org_slug])
+      else
+        current_user.organizations.first
+      end
     end
 
     ActsAsTenant.current_tenant = organization

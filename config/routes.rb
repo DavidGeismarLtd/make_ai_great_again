@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-
-  mount PromptTracker::Engine, at: "/prompt_tracker"
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -14,4 +12,18 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
+
+  # Organization-scoped routes
+  # All PromptTracker routes are scoped under /orgs/:org_slug/app
+  # This ensures complete data isolation and clear URL structure
+  scope "/orgs/:org_slug" do
+    # Mount PromptTracker engine at /orgs/:org_slug/app
+    # The :org_slug param is automatically available in ApplicationController#set_current_tenant
+    mount PromptTracker::Engine, at: "/app", as: :org_prompt_tracker
+
+    # Future: Add other organization-scoped routes here
+    # resources :api_configurations
+    # resources :team_members
+    # etc.
+  end
 end
