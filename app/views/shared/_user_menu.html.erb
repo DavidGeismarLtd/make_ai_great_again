@@ -8,7 +8,7 @@
         <%= user_initials(current_user) %>
       </div>
     </button>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown" data-dropdown-target="menu">
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown" data-dropdown-target="menu" style="position: absolute; right: 0; left: auto;">
       <li>
         <div class="dropdown-header">
           <div class="fw-bold"><%= current_user.first_name %> <%= current_user.last_name %></div>
@@ -32,10 +32,13 @@
 
       <% if current_organization %>
         <li>
-          <%= link_to "#", class: "dropdown-item" do %>
+          <%# TODO: Implement API Keys management page %>
+          <%# <%= link_to main_app.org_api_configurations_path(org_slug: current_organization.slug), class: "dropdown-item" do %>
+          <a href="#" class="dropdown-item disabled" aria-disabled="true" title="Coming soon">
             <i class="bi bi-key me-2"></i> API Keys
             <span class="badge bg-secondary ms-1"><%= current_organization.name %></span>
-          <% end %>
+          </a>
+          <%# <% end %>
         </li>
       <% end %>
 

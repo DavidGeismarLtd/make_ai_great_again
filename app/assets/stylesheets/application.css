@@ -156,6 +156,12 @@ code, pre, .font-monospace {
   min-width: 250px;
 }
 
+/* User Menu Dropdown - ensure it aligns to the right */
+.dropdown-menu-end {
+  right: 0 !important;
+  left: auto !important;
+}
+
 .dropdown-item {
   color: var(--pt-text-primary);
   padding: 0.5rem 1rem;
@@ -170,6 +176,13 @@ code, pre, .font-monospace {
 .dropdown-item.active {
   background-color: var(--pt-accent-blue);
   color: #ffffff;
+}
+
+.dropdown-item.disabled {
+  color: var(--pt-text-secondary);
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .dropdown-header {
