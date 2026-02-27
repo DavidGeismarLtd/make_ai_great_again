@@ -16,13 +16,19 @@ Rails.application.routes.draw do
   # Organization-scoped routes
   # All PromptTracker routes are scoped under /orgs/:org_slug/app
   # This ensures complete data isolation and clear URL structure
-  scope "/orgs/:org_slug" do
+  scope "/orgs/:org_slug", as: :org do
+    # API Key Management
+    resources :api_configurations do
+      member do
+        post :test_connection
+      end
+    end
+
     # Mount PromptTracker engine at /orgs/:org_slug/app
     # The :org_slug param is automatically available in ApplicationController#set_current_tenant
-    mount PromptTracker::Engine, at: "/app", as: :org_prompt_tracker
+    mount PromptTracker::Engine, at: "/app", as: :prompt_tracker
 
     # Future: Add other organization-scoped routes here
-    # resources :api_configurations
     # resources :team_members
     # etc.
   end

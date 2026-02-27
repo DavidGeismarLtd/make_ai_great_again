@@ -1,0 +1,40 @@
+<% content_for :page_title, "Edit API Key" %>
+
+<% content_for :breadcrumbs do %>
+  <%= render "shared/breadcrumbs", breadcrumbs: [
+    { name: current_organization.name, url: main_app.org_prompt_tracker_path(current_organization.slug) },
+    { name: "API Keys", url: org_api_configurations_path(current_organization.slug) },
+    { name: "Edit API Key", url: nil }
+  ] %>
+<% end %>
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-lg-8 col-xl-6">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="h4 mb-0">Edit API Key</h2>
+        </div>
+        <div class="card-body">
+          <%= render "form", 
+                     api_configuration: @api_configuration,
+                     form_url: org_api_configuration_path(current_organization.slug, @api_configuration),
+                     form_method: :patch,
+                     submit_text: "Update API Key" %>
+        </div>
+      </div>
+
+      <div class="alert alert-warning mt-4">
+        <h5 class="alert-heading">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Important
+        </h5>
+        <p class="mb-0">
+          Changing the API key will affect all LLM calls made by this organization. 
+          Make sure the new key is valid before saving.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+

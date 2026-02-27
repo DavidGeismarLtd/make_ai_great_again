@@ -8,6 +8,9 @@ class ApplicationController < ActionController::Base
   # Pundit authorization
   include Pundit::Authorization
 
+  # LLM API key management
+  include SetsLlmApiKeys
+
   # Multi-tenancy
   set_current_tenant_through_filter
   before_action :authenticate_user!

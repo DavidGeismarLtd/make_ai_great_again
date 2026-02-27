@@ -1,0 +1,67 @@
+<%= form_with(model: api_configuration, url: form_url, method: form_method, local: true) do |form| %>
+  <% if api_configuration.errors.any? %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <h5 class="alert-heading">
+        <%= pluralize(api_configuration.errors.count, "error") %> prohibited this API key from being saved:
+      </h5>
+      <ul class="mb-0">
+        <% api_configuration.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :provider, "LLM Provider", class: "form-label" %>
+    <%= form.select :provider, 
+                     ApiConfiguration.providers.keys.map { |p| [p.titleize, p] },
+                     { include_blank: "Select a provider..." },
+                     class: "form-select",
+                     required: true %>
+    <div class="form-text">
+      Choose the LLM provider for this API key (OpenAI, Anthropic, Google, or Azure OpenAI).
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :key_name, "Key Name", class: "form-label" %>
+    <%= form.text_field :key_name, 
+                        class: "form-control",
+                        placeholder: "e.g., Production OpenAI Key",
+                        required: true %>
+    <div class="form-text">
+      A friendly name to identify this API key (e.g., "Production", "Development", "Team A").
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :encrypted_api_key, "API Key", class: "form-label" %>
+    <%= form.text_field :encrypted_api_key, 
+                        class: "form-control font-monospace",
+                        placeholder: "sk-...",
+                        required: true,
+                        autocomplete: "off" %>
+    <div class="form-text">
+      <i class="bi bi-shield-lock me-1"></i>
+      Your API key will be encrypted before being stored in the database.
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <div class="form-check form-switch">
+      <%= form.check_box :is_active, class: "form-check-input", role: "switch" %>
+      <%= form.label :is_active, "Active", class: "form-check-label" %>
+    </div>
+    <div class="form-text">
+      Only active API keys will be used for LLM calls. Disable to temporarily stop using this key without deleting it.
+    </div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <%= form.submit submit_text, class: "btn btn-primary" %>
+    <%= link_to "Cancel", org_api_configurations_path(current_organization.slug), class: "btn btn-outline-secondary" %>
+  </div>
+<% end %>
+

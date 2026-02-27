@@ -32,13 +32,10 @@
 
       <% if current_organization %>
         <li>
-          <%# TODO: Implement API Keys management page %>
-          <%# <%= link_to main_app.org_api_configurations_path(org_slug: current_organization.slug), class: "dropdown-item" do %>
-          <a href="#" class="dropdown-item disabled" aria-disabled="true" title="Coming soon">
+          <%= link_to main_app.org_api_configurations_path(current_organization.slug), class: "dropdown-item" do %>
             <i class="bi bi-key me-2"></i> API Keys
             <span class="badge bg-secondary ms-1"><%= current_organization.name %></span>
-          </a>
-          <%# <% end %>
+          <% end %>
         </li>
       <% end %>
 

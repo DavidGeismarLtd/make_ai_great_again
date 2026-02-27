@@ -1,0 +1,42 @@
+<% content_for :page_title, "Add API Key" %>
+
+<% content_for :breadcrumbs do %>
+  <%= render "shared/breadcrumbs", breadcrumbs: [
+    { name: current_organization.name, url: main_app.org_prompt_tracker_path(current_organization.slug) },
+    { name: "API Keys", url: org_api_configurations_path(current_organization.slug) },
+    { name: "Add API Key", url: nil }
+  ] %>
+<% end %>
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-lg-8 col-xl-6">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="h4 mb-0">Add New API Key</h2>
+        </div>
+        <div class="card-body">
+          <%= render "form", 
+                     api_configuration: @api_configuration,
+                     form_url: org_api_configurations_path(current_organization.slug),
+                     form_method: :post,
+                     submit_text: "Add API Key" %>
+        </div>
+      </div>
+
+      <div class="alert alert-info mt-4">
+        <h5 class="alert-heading">
+          <i class="bi bi-lightbulb me-2"></i>
+          Where to Find Your API Keys
+        </h5>
+        <ul class="mb-0">
+          <li><strong>OpenAI:</strong> <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com/api-keys</a></li>
+          <li><strong>Anthropic:</strong> <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com/settings/keys</a></li>
+          <li><strong>Google (Gemini):</strong> <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com/app/apikey</a></li>
+          <li><strong>Azure OpenAI:</strong> Azure Portal → Your OpenAI Resource → Keys and Endpoint</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
