@@ -1,0 +1,15 @@
+<%# Override PromptTracker's layout to use host app's unified navigation %>
+<%# This ensures PromptTracker pages render within the host app's layout %>
+<%# providing a seamless, single-application experience %>
+
+<% content_for :page_title do %>
+  <%= yield :title %> - PromptTracker
+<% end %>
+
+<% content_for :breadcrumbs do %>
+  <%= yield :breadcrumbs %>
+<% end %>
+
+<%# Render the host app's main layout %>
+<%= render template: "layouts/application" %>
+

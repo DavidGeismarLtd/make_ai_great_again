@@ -23,5 +23,9 @@ module MakeAiGreatAgain
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Add app/javascript to asset load paths for Propshaft
+    # This allows importmap to serve JavaScript files directly
+    config.assets.paths << Rails.root.join("app/javascript")
   end
 end

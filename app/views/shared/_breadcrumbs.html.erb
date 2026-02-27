@@ -1,0 +1,19 @@
+<%# Breadcrumbs %>
+<%# Shows navigation path - pages can add breadcrumbs using content_for :breadcrumbs %>
+
+<% if content_for?(:breadcrumbs) %>
+  <div class="container-fluid mt-3">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <% if user_signed_in? && current_organization %>
+            <%= link_to current_organization.name, org_prompt_tracker.root_path(org_slug: current_organization.slug) %>
+          <% else %>
+            <%= link_to "Home", root_path %>
+          <% end %>
+        </li>
+        <%= yield :breadcrumbs %>
+      </ol>
+    </nav>
+  </div>
+<% end %>

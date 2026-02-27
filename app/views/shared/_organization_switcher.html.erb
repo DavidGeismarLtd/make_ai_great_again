@@ -1,0 +1,43 @@
+<%# Organization Switcher Dropdown %>
+<%# Shows current organization and allows switching between user's organizations %>
+
+<% if user_signed_in? && current_organization %>
+  <div class="dropdown ms-3" data-controller="dropdown">
+    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="organizationDropdown" data-dropdown-target="toggle" data-action="click->dropdown#toggle" aria-expanded="false">
+      <i class="bi bi-building"></i>
+      <span class="d-none d-md-inline ms-1"><%= current_organization.name %></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="organizationDropdown" data-dropdown-target="menu">
+      <li>
+        <h6 class="dropdown-header">YOUR ORGANIZATIONS</h6>
+      </li>
+      <li><hr class="dropdown-divider"></li>
+
+      <% user_organizations.each do |org| %>
+        <li>
+          <%= link_to org_prompt_tracker.root_path(org_slug: org.slug), class: "dropdown-item #{'active' if org.id == current_organization.id}" do %>
+            <% if org.id == current_organization.id %>
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <% else %>
+              <i class="bi bi-circle me-2"></i>
+            <% end %>
+            <%= org.name %>
+          <% end %>
+        </li>
+      <% end %>
+
+      <%# Future: Add "Create Organization" and "Manage Organizations" links %>
+      <%# <li><hr class="dropdown-divider"></li> %>
+      <%# <li> %>
+      <%#   <%= link_to new_organization_path, class: "dropdown-item" do %>
+      <%#     <i class="bi bi-plus-circle me-2"></i> Create Organization %>
+      <%#   <% end %>
+      <%# </li> %>
+      <%# <li> %>
+      <%#   <%= link_to organizations_path, class: "dropdown-item" do %>
+      <%#     <i class="bi bi-gear me-2"></i> Manage Organizations %>
+      <%#   <% end %>
+      <%# </li> %>
+    </ul>
+  </div>
+<% end %>
