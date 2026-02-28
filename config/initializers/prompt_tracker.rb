@@ -2,87 +2,64 @@
 
 # PromptTracker Configuration
 #
-# This initializer configures PromptTracker with dynamic, organization-specific API keys.
-# Instead of using static ENV variables, API keys are fetched from the database
-# based on the current organization (tenant).
+# This initializer configures PromptTracker with dynamic, organization-specific settings.
+# Using the configuration_provider pattern, we fetch API keys, contexts, and features
+# from the database based on the current organization (tenant).
 #
 # How it works:
 # 1. ActsAsTenant sets the current organization based on the URL (:org_slug)
-# 2. When PromptTracker needs an API key, it calls config.api_key_for(provider)
-# 3. We override this method to fetch the key from the ApiConfiguration model
-# 4. The key is automatically scoped to the current organization via acts_as_tenant
+# 2. The configuration_provider lambda is called at runtime for each request
+# 3. It fetches organization-specific settings from the database
+# 4. PromptTracker uses these dynamic settings, falling back to static defaults
 #
-# This ensures complete data isolation and allows each organization to use
-# their own API keys for LLM providers.
+# This ensures complete data isolation and allows each organization to have
+# their own API keys, context defaults, and feature flags.
 
 PromptTracker.configure do |config|
   # ===========================================================================
-  # 1. CORE SETTINGS
+  # 1. STATIC SETTINGS (applied to all requests)
   # ===========================================================================
   config.basic_auth_username = nil
   config.basic_auth_password = nil
 
   # ===========================================================================
-  # 2. DYNAMIC API KEY RESOLUTION
+  # 2. DYNAMIC CONFIGURATION PROVIDER
   # ===========================================================================
-  # Override the api_key_for method to fetch keys from the database
-  # instead of using static configuration.
+  # This lambda is called at runtime to get organization-specific configuration.
+  # It returns a hash with providers, contexts, and features for the current org.
   #
-  # This method is called by PromptTracker whenever it needs an API key
-  # for a specific provider (e.g., :openai, :anthropic, :google).
-  #
-  # The method:
-  # 1. Gets the current organization from ActsAsTenant
-  # 2. Queries the api_configurations table for an active key
-  # 3. Returns the decrypted API key or nil if not found
-  #
-  # Note: This relies on ActsAsTenant.current_tenant being set, which happens
-  # automatically in controllers via the set_current_tenant before_action.
-  config.define_singleton_method(:api_key_for) do |provider|
+  # The configuration_provider is called whenever PromptTracker needs config values.
+  # It has access to ActsAsTenant.current_tenant, which is set by the
+  # set_current_tenant before_action in ApplicationController.
+  config.configuration_provider = lambda {
     # Get current organization from ActsAsTenant
     org = ActsAsTenant.current_tenant
 
-    # Return nil if no tenant is set (e.g., in console or background jobs)
-    return nil unless org
+    # Return empty hash to use static fallbacks when no org context
+    # (e.g., in console, background jobs without tenant context)
+    return {} unless org
 
-    # Fetch the active API configuration for this provider
-    # The query is automatically scoped to the current organization
-    # via acts_as_tenant's default_scope
-    api_config = ApiConfiguration
-      .active
-      .find_by(provider: provider.to_s)
+    # Build dynamic configuration hash
+    {
+      # PROVIDERS: Fetch API keys from database
+      providers: build_providers_for_organization(org)
 
-    # Return the decrypted API key (Rails handles decryption automatically)
-    api_config&.encrypted_api_key
-  end
+      # CONTEXTS: Use static defaults for now (can be made dynamic later)
+      # contexts: build_contexts_for_organization(org),
 
-  # Override provider_configured? to check database instead of static config
-  config.define_singleton_method(:provider_configured?) do |provider|
-    org = ActsAsTenant.current_tenant
-    return false unless org
-
-    ApiConfiguration
-      .active
-      .exists?(provider: provider.to_s)
-  end
-
-  # Override enabled_providers to return providers from database
-  config.define_singleton_method(:enabled_providers) do
-    org = ActsAsTenant.current_tenant
-    return [] unless org
-
-    ApiConfiguration
-      .active
-      .pluck(:provider)
-      .map(&:to_sym)
-      .uniq
-  end
+      # FEATURES: Use static defaults for now (can be made dynamic later)
+      # features: build_features_for_organization(org)
+    }
+  }
 
   # ===========================================================================
-  # 3. CONTEXTS
+  # 3. STATIC FALLBACK: CONTEXTS
   # ===========================================================================
   # Usage scenarios with their default selections.
-  # Each context specifies which provider/api/model to use by default.
+  # These are used when configuration_provider returns nil/empty or doesn't
+  # include a contexts key.
+  #
+  # TODO: Make these organization-specific by storing in database
   config.contexts = {
     playground: {
       description: "Prompt version testing in the playground",
@@ -118,51 +95,65 @@ PromptTracker.configure do |config|
   }
 
   # ===========================================================================
-  # 4. FEATURE FLAGS
+  # 4. STATIC FALLBACK: FEATURE FLAGS
   # ===========================================================================
+  # Feature flags that control optional functionality.
+  # These are used when configuration_provider returns nil/empty or doesn't
+  # include a features key.
+  #
+  # TODO: Make these organization-specific by storing in database
   config.features = {
     openai_assistant_sync: true  # Show "Sync OpenAI Assistants" button in Testing Dashboard
   }
-end
 
-# ===========================================================================
-# 5. ENVIRONMENT VARIABLE SETUP FOR RUBYLLM
-# ===========================================================================
-# RubyLLM (used by PromptTracker) expects API keys to be available as
-# environment variables. We need to set these dynamically based on the
-# current organization's API configurations.
-#
-# IMPORTANT: We need to patch the PromptTracker LLM services to set ENV
-# variables before each call. This is done in a separate initializer that
-# runs after PromptTracker is loaded.
-#
-# For reference, RubyLLM expects these ENV variables:
-# - OPENAI_API_KEY
-# - ANTHROPIC_API_KEY
-# - GOOGLE_API_KEY (or GEMINI_API_KEY)
-# - AZURE_OPENAI_API_KEY
-#
-# These are set dynamically per-request based on the current organization.
-
-# Helper method to set ENV variables for RubyLLM based on current organization
-def self.set_api_keys_from_current_org!
-  org = ActsAsTenant.current_tenant
-  return unless org
-
-  # Map provider names to ENV variable names
-  provider_env_map = {
-    'openai' => 'OPENAI_API_KEY',
-    'anthropic' => 'ANTHROPIC_API_KEY',
-    'google' => 'GOOGLE_API_KEY',
-    'azure_openai' => 'AZURE_OPENAI_API_KEY'
+  # ===========================================================================
+  # 5. STATIC FALLBACK: PROVIDERS
+  # ===========================================================================
+  # Fallback API keys from environment variables.
+  # These are used when configuration_provider returns nil/empty or doesn't
+  # include a providers key.
+  #
+  # In production, these should be empty since we use database-stored keys.
+  config.providers = {
+    openai: { api_key: ENV["OPENAI_API_KEY"] },
+    anthropic: { api_key: ENV["ANTHROPIC_API_KEY"] },
+    google: { api_key: ENV["GOOGLE_API_KEY"] }
   }
-
-  # Fetch all active API configurations for the current organization
-  ApiConfiguration.active.each do |api_config|
-    env_var_name = provider_env_map[api_config.provider]
-    next unless env_var_name
-
-    # Set the ENV variable with the decrypted API key
-    ENV[env_var_name] = api_config.encrypted_api_key if api_config.encrypted_api_key.present?
-  end
 end
+
+# ===========================================================================
+# HELPER METHODS FOR CONFIGURATION PROVIDER
+# ===========================================================================
+
+# Build providers hash with API keys from database
+def build_providers_for_organization(org)
+  providers = {}
+
+  # Fetch all active API configurations for this organization
+  # The query is automatically scoped by acts_as_tenant
+  ApiConfiguration.active.each do |api_config|
+    provider_key = api_config.provider.to_sym
+
+    providers[provider_key] = {
+      api_key: api_config.encrypted_api_key
+    }
+  end
+
+  providers
+end
+
+# TODO: Build contexts hash from database (for Phase 2)
+# def build_contexts_for_organization(org)
+#   org_config = org.organization_configuration
+#   return {} unless org_config
+#
+#   org_config.contexts_config.deep_symbolize_keys
+# end
+
+# TODO: Build features hash from database (for Phase 2)
+# def build_features_for_organization(org)
+#   org_config = org.organization_configuration
+#   return {} unless org_config
+#
+#   org_config.features_config.deep_symbolize_keys
+# end
