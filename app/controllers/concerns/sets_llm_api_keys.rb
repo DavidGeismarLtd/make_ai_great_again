@@ -21,14 +21,22 @@ module SetsLlmApiKeys
 
   included do
     # Run after set_current_tenant to ensure we have the current organization
-    before_action :set_llm_api_keys, if: -> { user_signed_in? && current_organization.present? }
+    # Only run if we have a tenant set (avoid NoTenantSet errors on non-org pages)
+    before_action :set_llm_api_keys, if: :tenant_set?
   end
 
   private
 
+  # Check if a tenant is set without raising an error
+  def tenant_set?
+    user_signed_in? && ActsAsTenant.current_tenant.present?
+  rescue ActsAsTenant::Errors::NoTenantSet
+    false
+  end
+
   # Set ENV variables for LLM providers based on current organization's API configurations
   def set_llm_api_keys
-    return unless current_organization
+    return unless ActsAsTenant.current_tenant
 
     # Map provider names to ENV variable names expected by RubyLLM
     provider_env_map = {
@@ -50,4 +58,3 @@ module SetsLlmApiKeys
     end
   end
 end
-
