@@ -32,9 +32,18 @@
 
       <% if current_organization %>
         <li>
+          <h6 class="dropdown-header text-uppercase small">
+            <%= current_organization.name %>
+          </h6>
+        </li>
+        <li>
           <%= link_to main_app.org_api_configurations_path(current_organization.slug), class: "dropdown-item" do %>
             <i class="bi bi-key me-2"></i> API Keys
-            <span class="badge bg-secondary ms-1"><%= current_organization.name %></span>
+          <% end %>
+        </li>
+        <li>
+          <%= link_to main_app.org_organization_settings_path(current_organization.slug), class: "dropdown-item" do %>
+            <i class="bi bi-sliders me-2"></i> Organization Settings
           <% end %>
         </li>
       <% end %>

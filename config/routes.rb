@@ -24,6 +24,16 @@ Rails.application.routes.draw do
       end
     end
 
+    # Organization Settings (contexts, features, etc.)
+    resource :organization_settings, only: [ :show, :edit, :update ], path: "settings" do
+      member do
+        get :contexts
+        patch :update_contexts
+        get :features
+        patch :update_features
+      end
+    end
+
     # Mount PromptTracker engine at /orgs/:org_slug/app
     # The :org_slug param is automatically available in ApplicationController#set_current_tenant
     mount PromptTracker::Engine, at: "/app", as: :prompt_tracker

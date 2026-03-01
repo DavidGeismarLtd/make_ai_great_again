@@ -1,0 +1,91 @@
+<% content_for :page_title, "Edit Feature Flags" %>
+
+<% content_for :breadcrumbs do %>
+  <%= render "shared/breadcrumbs", breadcrumbs: [
+    { name: current_organization.name, url: main_app.org_prompt_tracker_path(current_organization.slug) },
+    { name: "Settings", url: main_app.org_organization_settings_path(current_organization.slug) },
+    { name: "Features", url: nil }
+  ] %>
+<% end %>
+
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="h2 mb-2">Feature Flags</h1>
+      <p class="text-muted">
+        Enable or disable optional features for <%= current_organization.name %>
+      </p>
+    </div>
+  </div>
+
+  <%= form_with url: update_features_org_organization_settings_path(current_organization.slug), 
+                method: :patch, 
+                local: true do |f| %>
+    
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <% feature_descriptions = {
+              openai_assistant_sync: "Show 'Sync OpenAI Assistants' button in Testing Dashboard. Allows syncing prompts with OpenAI Assistants API."
+            } %>
+
+            <% OrganizationConfiguration::DEFAULT_FEATURES.each do |feature_name, default_value| %>
+              <% current_value = @organization_configuration.features_config.fetch(feature_name.to_s, default_value) %>
+              
+              <div class="mb-4 pb-4 border-bottom">
+                <div class="d-flex align-items-start">
+                  <div class="flex-grow-1">
+                    <h5 class="mb-2">
+                      <%= feature_name.to_s.titleize %>
+                    </h5>
+                    <p class="text-muted small mb-3">
+                      <%= feature_descriptions[feature_name] || "Enable or disable this feature" %>
+                    </p>
+                  </div>
+                  <div class="flex-shrink-0 ms-3">
+                    <div class="form-check form-switch">
+                      <%= check_box_tag "features_config[#{feature_name}]",
+                                        "true",
+                                        current_value,
+                                        class: "form-check-input",
+                                        style: "width: 3rem; height: 1.5rem; cursor: pointer;",
+                                        id: "feature_#{feature_name}" %>
+                      <%= label_tag "feature_#{feature_name}", 
+                                    current_value ? "Enabled" : "Disabled",
+                                    class: "form-check-label ms-2" %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+
+            <div class="d-flex gap-2">
+              <%= f.submit "Save Feature Flags", class: "btn btn-success" %>
+              <%= link_to "Cancel", org_organization_settings_path(current_organization.slug), class: "btn btn-outline-secondary" %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card bg-light">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="bi bi-info-circle me-2"></i>
+              About Feature Flags
+            </h6>
+            <p class="small mb-3">
+              Feature flags allow you to enable or disable optional functionality in PromptTracker.
+            </p>
+            <div class="alert alert-warning small mb-0">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <strong>Note:</strong> Some features may require specific API keys to be configured.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+

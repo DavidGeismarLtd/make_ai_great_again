@@ -42,13 +42,13 @@ PromptTracker.configure do |config|
     # Build dynamic configuration hash
     {
       # PROVIDERS: Fetch API keys from database
-      providers: build_providers_for_organization(org)
+      providers: build_providers_for_organization(org),
 
-      # CONTEXTS: Use static defaults for now (can be made dynamic later)
-      # contexts: build_contexts_for_organization(org),
+      # CONTEXTS: Fetch context defaults from database
+      contexts: build_contexts_for_organization(org),
 
-      # FEATURES: Use static defaults for now (can be made dynamic later)
-      # features: build_features_for_organization(org)
+      # FEATURES: Fetch feature flags from database
+      features: build_features_for_organization(org)
     }
   }
 
@@ -57,9 +57,9 @@ PromptTracker.configure do |config|
   # ===========================================================================
   # Usage scenarios with their default selections.
   # These are used when configuration_provider returns nil/empty or doesn't
-  # include a contexts key.
+  # include a contexts key (e.g., console, background jobs without tenant).
   #
-  # TODO: Make these organization-specific by storing in database
+  # Organizations can customize these via Organization Settings UI.
   config.contexts = {
     playground: {
       description: "Prompt version testing in the playground",
@@ -99,9 +99,9 @@ PromptTracker.configure do |config|
   # ===========================================================================
   # Feature flags that control optional functionality.
   # These are used when configuration_provider returns nil/empty or doesn't
-  # include a features key.
+  # include a features key (e.g., console, background jobs without tenant).
   #
-  # TODO: Make these organization-specific by storing in database
+  # Organizations can customize these via Organization Settings UI.
   config.features = {
     openai_assistant_sync: true  # Show "Sync OpenAI Assistants" button in Testing Dashboard
   }
@@ -142,18 +142,20 @@ def build_providers_for_organization(org)
   providers
 end
 
-# TODO: Build contexts hash from database (for Phase 2)
-# def build_contexts_for_organization(org)
-#   org_config = org.organization_configuration
-#   return {} unless org_config
-#
-#   org_config.contexts_config.deep_symbolize_keys
-# end
+# Build contexts hash from database
+def build_contexts_for_organization(org)
+  org_config = org.organization_configuration
+  return {} unless org_config
 
-# TODO: Build features hash from database (for Phase 2)
-# def build_features_for_organization(org)
-#   org_config = org.organization_configuration
-#   return {} unless org_config
-#
-#   org_config.features_config.deep_symbolize_keys
-# end
+  # Convert string keys to symbols for PromptTracker
+  org_config.contexts_config.deep_symbolize_keys
+end
+
+# Build features hash from database
+def build_features_for_organization(org)
+  org_config = org.organization_configuration
+  return {} unless org_config
+
+  # Convert string keys to symbols for PromptTracker
+  org_config.features_config.deep_symbolize_keys
+end

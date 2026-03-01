@@ -1,0 +1,139 @@
+<% content_for :page_title, "Organization Settings" %>
+
+<% content_for :breadcrumbs do %>
+  <%= render "shared/breadcrumbs", breadcrumbs: [
+    { name: current_organization.name, url: main_app.org_prompt_tracker_path(current_organization.slug) },
+    { name: "Settings", url: nil }
+  ] %>
+<% end %>
+
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="h2 mb-2">Organization Settings</h1>
+      <p class="text-muted">
+        Configure PromptTracker settings for <%= current_organization.name %>
+      </p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Contexts Card -->
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0">
+              <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                <i class="bi bi-sliders text-primary fs-3"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-1">Context Settings</h5>
+              <p class="text-muted small mb-0">
+                Configure default providers and models for each context
+              </p>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <h6 class="small text-uppercase text-muted mb-2">Available Contexts:</h6>
+            <ul class="list-unstyled mb-0">
+              <% @organization_configuration.contexts_config.each do |context_name, context_config| %>
+                <li class="mb-2">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-check-circle text-success me-2"></i>
+                    <div>
+                      <strong><%= context_name.to_s.titleize %></strong>
+                      <br>
+                      <small class="text-muted">
+                        <%= context_config["default_provider"]&.titleize %> - 
+                        <%= context_config["default_model"] %>
+                      </small>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+
+          <%= link_to contexts_org_organization_settings_path(current_organization.slug), 
+                      class: "btn btn-outline-primary w-100" do %>
+            <i class="bi bi-pencil me-2"></i>
+            Edit Context Settings
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Card -->
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0">
+              <div class="bg-success bg-opacity-10 rounded-3 p-3">
+                <i class="bi bi-toggles text-success fs-3"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-1">Feature Flags</h5>
+              <p class="text-muted small mb-0">
+                Enable or disable optional features
+              </p>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <h6 class="small text-uppercase text-muted mb-2">Current Features:</h6>
+            <ul class="list-unstyled mb-0">
+              <% @organization_configuration.features_config.each do |feature_name, enabled| %>
+                <li class="mb-2">
+                  <div class="d-flex align-items-center">
+                    <% if enabled %>
+                      <i class="bi bi-toggle-on text-success me-2 fs-5"></i>
+                    <% else %>
+                      <i class="bi bi-toggle-off text-muted me-2 fs-5"></i>
+                    <% end %>
+                    <div>
+                      <strong><%= feature_name.to_s.titleize %></strong>
+                      <br>
+                      <small class="text-muted">
+                        <%= enabled ? "Enabled" : "Disabled" %>
+                      </small>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+
+          <%= link_to features_org_organization_settings_path(current_organization.slug), 
+                      class: "btn btn-outline-success w-100" do %>
+            <i class="bi bi-pencil me-2"></i>
+            Edit Feature Flags
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Alert -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="alert alert-info">
+        <h5 class="alert-heading">
+          <i class="bi bi-info-circle me-2"></i>
+          About Organization Settings
+        </h5>
+        <p class="mb-2">
+          <strong>Contexts:</strong> Define default LLM providers and models for different use cases (playground, LLM judge, dataset generation, etc.)
+        </p>
+        <p class="mb-0">
+          <strong>Features:</strong> Enable or disable optional functionality like OpenAI Assistant sync, experimental features, etc.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+

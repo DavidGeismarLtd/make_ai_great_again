@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_25_100645) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_01_122916) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_100645) do
     t.datetime "updated_at", null: false
     t.index ["organization_id", "provider", "key_name"], name: "index_api_configs_on_org_provider_name", unique: true
     t.index ["organization_id"], name: "index_api_configurations_on_organization_id"
+  end
+
+  create_table "organization_configurations", force: :cascade do |t|
+    t.jsonb "contexts_config", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.jsonb "features_config", default: {}, null: false
+    t.bigint "organization_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_organization_configurations_on_organization_id", unique: true
   end
 
   create_table "organization_memberships", force: :cascade do |t|
@@ -426,6 +435,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_100645) do
   end
 
   add_foreign_key "api_configurations", "organizations"
+  add_foreign_key "organization_configurations", "organizations"
   add_foreign_key "organization_memberships", "organizations"
   add_foreign_key "organization_memberships", "users"
   add_foreign_key "prompt_tracker_ab_tests", "organizations"

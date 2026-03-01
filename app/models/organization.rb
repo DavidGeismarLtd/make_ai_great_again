@@ -3,6 +3,7 @@ class Organization < ApplicationRecord
   has_many :organization_memberships, dependent: :destroy
   has_many :users, through: :organization_memberships
   has_many :api_configurations, dependent: :destroy
+  has_one :organization_configuration, dependent: :destroy
 
   # Validations
   validates :name, presence: true
