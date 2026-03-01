@@ -4,10 +4,15 @@ class HomeController < ApplicationController
 
   def index
     # Redirect authenticated users to their organization dashboard
-    if user_signed_in? && current_user.organizations.any?
-      # Get the user's first organization (or last visited - can be enhanced later)
-      org = current_user.organizations.first
-      redirect_to org_prompt_tracker.root_path(org_slug: org.slug)
+    # Use without_tenant because OrganizationMembership has acts_as_tenant
+    if user_signed_in?
+      org = ActsAsTenant.without_tenant do
+        current_user.organizations.first
+      end
+
+      if org
+        redirect_to org_prompt_tracker.root_path(org_slug: org.slug)
+      end
     end
     # Otherwise, show the landing page
   end
