@@ -80,21 +80,17 @@ test:
 production:
   primary:
     <<: *default
-    database: make_ai_great_again_production
-    username: <%= ENV["DATABASE_USERNAME"] %>
-    password: <%= ENV["DATABASE_PASSWORD"] %>
-    host: <%= ENV["DATABASE_HOST"] %>
+    # Render.com provides DATABASE_URL automatically
+    url: <%= ENV.fetch("DATABASE_URL", "postgresql://localhost/make_ai_great_again_production") %>
   cache:
     <<: *default
-    database: make_ai_great_again_production_cache
-    username: <%= ENV["DATABASE_USERNAME"] %>
-    password: <%= ENV["DATABASE_PASSWORD"] %>
-    host: <%= ENV["DATABASE_HOST"] %>
+    # Use the same database as primary for Solid Cache (Render provides single DB)
+    # Solid Cache uses its own tables within the same database
+    url: <%= ENV.fetch("DATABASE_URL", "postgresql://localhost/make_ai_great_again_production") %>
     migrations_paths: db/cache_migrate
   cable:
     <<: *default
-    database: make_ai_great_again_production_cable
-    username: <%= ENV["DATABASE_USERNAME"] %>
-    password: <%= ENV["DATABASE_PASSWORD"] %>
-    host: <%= ENV["DATABASE_HOST"] %>
+    # Use the same database as primary for Solid Cable (Render provides single DB)
+    # Solid Cable uses its own tables within the same database
+    url: <%= ENV.fetch("DATABASE_URL", "postgresql://localhost/make_ai_great_again_production") %>
     migrations_paths: db/cable_migrate
