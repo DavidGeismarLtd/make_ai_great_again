@@ -93,7 +93,7 @@ group :test do
   gem "selenium-webdriver"
 
   # Testing utilities
-  gem "shoulda-matchers", "~> 6.4"
+  gem "shoulda-matchers", "~> 7.0"
   gem "database_cleaner-active_record", "~> 2.2"
   gem "simplecov", require: false
 end
