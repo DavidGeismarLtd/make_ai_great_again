@@ -1,0 +1,42 @@
+# Sidekiq configuration
+# See https://github.com/sidekiq/sidekiq/wiki/Advanced-Options for more options
+
+# Production configuration
+:concurrency: 5
+
+# Queues to process (in order of priority)
+:queues:
+  - critical
+  - default
+  - mailers
+  - low
+
+# Maximum number of retries for failed jobs
+:max_retries: 5
+
+# How long to wait before retrying a failed job (in seconds)
+:retry_delay: 60
+
+# Production-specific settings
+production:
+  :concurrency: 10
+  :queues:
+    - [critical, 3]
+    - [default, 2]
+    - [mailers, 1]
+    - [low, 1]
+
+# Development settings
+development:
+  :concurrency: 3
+  :queues:
+    - default
+    - mailers
+    - low
+
+# Test settings
+test:
+  :concurrency: 1
+  :queues:
+    - default
+

@@ -1,0 +1,71 @@
+# Render Blueprint for Make AI Great Again
+# This file defines the infrastructure as code for deploying to Render.com
+# See: https://render.com/docs/blueprint-spec
+
+services:
+  # Web Service - Rails application
+  - type: web
+    name: make-ai-great-again
+    runtime: ruby
+    plan: free  # Change to 'starter' or higher for production
+    buildCommand: "./bin/render-build.sh"
+    startCommand: "bundle exec puma -C config/puma.rb"
+    healthCheckPath: /up
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: make-ai-great-again-db
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false  # You'll provide this value manually in Render dashboard
+      - key: WEB_CONCURRENCY
+        value: 2  # Recommended default for production
+      - key: RAILS_MAX_THREADS
+        value: 5
+      - key: RAILS_ENV
+        value: production
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: make-ai-great-again-redis
+          property: connectionString
+
+  # Background Worker - Sidekiq for background jobs
+  - type: worker
+    name: make-ai-great-again-sidekiq
+    runtime: ruby
+    plan: free  # Change to 'starter' or higher for production
+    buildCommand: "bundle install"
+    startCommand: "bundle exec sidekiq -C config/sidekiq.yml"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: make-ai-great-again-db
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false  # You'll provide this value manually in Render dashboard
+      - key: RAILS_ENV
+        value: production
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: make-ai-great-again-redis
+          property: connectionString
+
+databases:
+  # PostgreSQL Database
+  - name: make-ai-great-again-db
+    plan: free  # Change to 'starter' or higher for production
+    databaseName: make_ai_great_again_db
+    user: make_ai_great_again_user
+
+# Redis instance for Sidekiq and caching
+# Note: Render's free Redis plan is limited. Consider upgrading for production.
+# Alternatively, use an external Redis provider like Upstash or Redis Cloud.
+# To use this, uncomment the section below:
+#
+# - type: redis
+#   name: make-ai-great-again-redis
+#   plan: free  # Limited to 25MB, upgrade for production
+#   maxmemoryPolicy: allkeys-lru  # Evict least recently used keys when full
+
