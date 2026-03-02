@@ -1,9 +1,9 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
-  # :timeoutable and :omniauthable
+  # :timeoutable, :confirmable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :confirmable, :lockable, :trackable
+         :lockable, :trackable
 
   # Associations
   has_many :organization_memberships, dependent: :destroy
@@ -16,6 +16,9 @@ class User < ApplicationRecord
 
   # Enums
   enum :role, { user: "user", admin: "admin" }
+
+  # Set default role
+  attribute :role, :string, default: "user"
 
   # Methods
   def full_name
