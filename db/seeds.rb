@@ -351,3 +351,23 @@ ensure
   # Restore original tenant requirement setting
   ActsAsTenant.configuration.require_tenant = original_require_tenant
 end
+
+
+rails console
+
+acme = Organization.find_by(slug: 'acme-corp')
+tech_startup = Organization.find_by(slug: 'tech-startup')
+
+# Test Acme Corp tenant
+  ActsAsTenant.with_tenant(acme) do
+    PromptTracker::Prompt.count  # => 2
+    PromptTracker::PromptVersion.count  # => 3
+  end
+
+# Test Tech Startup tenant
+ActsAsTenant.with_tenant(tech_startup) do
+  PromptTracker::Prompt.count  # => 0 (isolated!)
+end
+
+# Test that organization association exists
+PromptTracker::Prompt.reflect_on_association(:organization).present?  # => true

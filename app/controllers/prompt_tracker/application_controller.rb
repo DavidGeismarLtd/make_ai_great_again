@@ -18,4 +18,3 @@ module PromptTracker
     # before_actions, helper methods, and concerns
   end
 end
-
