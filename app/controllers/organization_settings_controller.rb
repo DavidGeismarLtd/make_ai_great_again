@@ -25,6 +25,8 @@ class OrganizationSettingsController < ApplicationController
   # Contexts management
   def contexts
     # Page for editing context defaults (playground, llm_judge, etc.)
+    # Get list of configured providers (only show providers with API keys)
+    @configured_providers = ApiConfiguration.active.pluck(:provider).uniq
   end
 
   def update_contexts
@@ -54,8 +56,12 @@ class OrganizationSettingsController < ApplicationController
 
   def set_organization_configuration
     # Find or create organization configuration
-    @organization_configuration = current_organization.organization_configuration ||
-                                   current_organization.create_organization_configuration!
+    @organization_configuration = current_organization.organization_configuration
+
+    unless @organization_configuration
+      @organization_configuration = current_organization.build_organization_configuration
+      @organization_configuration.save!
+    end
   end
 
   def organization_configuration_params
@@ -73,4 +79,3 @@ class OrganizationSettingsController < ApplicationController
     params.require(:features_config).permit!.to_h
   end
 end
-

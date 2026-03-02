@@ -1,0 +1,136 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="mb-4">
+        <h1 class="h2 mb-2">Account Settings</h1>
+        <p class="text-muted">Manage your account information and security settings</p>
+      </div>
+
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <!-- Profile Information Card -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white py-3">
+            <h5 class="mb-0">
+              <i class="bi bi-person me-2"></i>
+              Profile Information
+            </h5>
+          </div>
+          <div class="card-body p-4">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <%= f.label :first_name, class: "form-label" %>
+                <%= f.text_field :first_name,
+                                 class: "form-control",
+                                 placeholder: "First name" %>
+              </div>
+
+              <div class="col-md-6">
+                <%= f.label :last_name, class: "form-label" %>
+                <%= f.text_field :last_name,
+                                 class: "form-control",
+                                 placeholder: "Last name" %>
+              </div>
+
+              <div class="col-12">
+                <%= f.label :email, class: "form-label" %>
+                <%= f.email_field :email,
+                                  autofocus: true,
+                                  autocomplete: "email",
+                                  class: "form-control",
+                                  placeholder: "you@example.com" %>
+                <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+                  <div class="form-text text-warning">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    Currently waiting confirmation for: <%= resource.unconfirmed_email %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Change Password Card -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white py-3">
+            <h5 class="mb-0">
+              <i class="bi bi-shield-lock me-2"></i>
+              Change Password
+            </h5>
+          </div>
+          <div class="card-body p-4">
+            <div class="alert alert-info mb-4">
+              <i class="bi bi-info-circle me-2"></i>
+              Leave password fields blank if you don't want to change your password
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <%= f.label :password, "New Password", class: "form-label" %>
+                <%= f.password_field :password,
+                                     autocomplete: "new-password",
+                                     class: "form-control",
+                                     placeholder: "Enter new password" %>
+                <% if @minimum_password_length %>
+                  <div class="form-text">
+                    Minimum <%= @minimum_password_length %> characters
+                  </div>
+                <% end %>
+              </div>
+
+              <div class="col-md-6">
+                <%= f.label :password_confirmation, "Confirm New Password", class: "form-label" %>
+                <%= f.password_field :password_confirmation,
+                                     autocomplete: "new-password",
+                                     class: "form-control",
+                                     placeholder: "Confirm new password" %>
+              </div>
+
+              <div class="col-12">
+                <hr class="my-3">
+                <%= f.label :current_password, class: "form-label" %>
+                <%= f.password_field :current_password,
+                                     autocomplete: "current-password",
+                                     class: "form-control",
+                                     placeholder: "Enter current password to confirm changes",
+                                     required: true %>
+                <div class="form-text">
+                  We need your current password to confirm any changes
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-2 mb-4">
+          <%= f.submit "Save Changes", class: "btn btn-primary btn-lg" %>
+          <%= link_to "Cancel", :back, class: "btn btn-outline-secondary btn-lg" %>
+        </div>
+      <% end %>
+
+      <!-- Danger Zone Card -->
+      <div class="card shadow-sm border-danger">
+        <div class="card-header bg-danger bg-opacity-10 border-danger py-3">
+          <h5 class="mb-0 text-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Danger Zone
+          </h5>
+        </div>
+        <div class="card-body p-4">
+          <p class="mb-3">
+            Once you delete your account, there is no going back. Please be certain.
+          </p>
+          <%= button_to "Delete My Account",
+                        registration_path(resource_name),
+                        method: :delete,
+                        data: {
+                          turbo_confirm: "Are you absolutely sure? This action cannot be undone and all your data will be permanently deleted."
+                        },
+                        class: "btn btn-danger" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

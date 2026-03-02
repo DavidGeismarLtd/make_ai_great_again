@@ -18,18 +18,21 @@
     </div>
   </div>
 
-  <%= form_with url: update_contexts_org_organization_settings_path(current_organization.slug), 
-                method: :patch, 
+  <%= form_with url: update_contexts_org_organization_settings_path(current_organization.slug),
+                method: :patch,
                 local: true do |f| %>
-    
+
     <div class="row">
       <div class="col-lg-8">
         <div class="card">
           <div class="card-body">
             <% OrganizationConfiguration::DEFAULT_CONTEXTS.each do |context_name, default_config| %>
               <% current_config = @organization_configuration.contexts_config[context_name.to_s] || default_config.stringify_keys %>
-              
-              <div class="mb-4 pb-4 border-bottom">
+
+              <div class="mb-4 pb-4 border-bottom"
+                   data-controller="context-form"
+                   data-context-form-provider-apis-value="<%= provider_apis_json %>"
+                   data-context-form-provider-models-value="<%= provider_models_json %>">
                 <h5 class="mb-3">
                   <i class="bi bi-circle-fill text-primary me-2" style="font-size: 0.5rem;"></i>
                   <%= context_name.to_s.titleize %>
@@ -43,28 +46,42 @@
                     <%= label_tag "contexts_config[#{context_name}][default_provider]", "Default Provider", class: "form-label" %>
                     <%= select_tag "contexts_config[#{context_name}][default_provider]",
                                    options_for_select(
-                                     [["OpenAI", "openai"], ["Anthropic", "anthropic"], ["Google", "google"]],
+                                     @configured_providers.map { |p| [p.titleize, p] },
                                      current_config["default_provider"]
                                    ),
-                                   class: "form-select" %>
+                                   class: "form-select",
+                                   data: {
+                                     context_form_target: "providerSelect",
+                                     action: "change->context-form#providerChanged"
+                                   } %>
+                    <% if @configured_providers.empty? %>
+                      <div class="form-text text-warning">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        No API keys configured. <%= link_to "Add API keys", org_api_configurations_path(current_organization.slug), class: "text-decoration-none" %>
+                      </div>
+                    <% end %>
                   </div>
 
                   <div class="col-md-6">
                     <%= label_tag "contexts_config[#{context_name}][default_api]", "Default API", class: "form-label" %>
                     <%= select_tag "contexts_config[#{context_name}][default_api]",
                                    options_for_select(
-                                     [["Chat Completions", "chat_completions"], ["Assistants", "assistants"]],
+                                     apis_for_provider(current_config["default_provider"]).map { |api| [api[:label], api[:value]] },
                                      current_config["default_api"]
                                    ),
-                                   class: "form-select" %>
+                                   class: "form-select",
+                                   data: { context_form_target: "apiSelect" } %>
                   </div>
 
                   <div class="col-md-6">
                     <%= label_tag "contexts_config[#{context_name}][default_model]", "Default Model", class: "form-label" %>
-                    <%= text_field_tag "contexts_config[#{context_name}][default_model]",
-                                       current_config["default_model"],
-                                       class: "form-control",
-                                       placeholder: "e.g., gpt-4o" %>
+                    <%= select_tag "contexts_config[#{context_name}][default_model]",
+                                   options_for_select(
+                                     models_for_provider(current_config["default_provider"]).map { |model| [model[:label], model[:value]] },
+                                     current_config["default_model"]
+                                   ),
+                                   class: "form-select",
+                                   data: { context_form_target: "modelSelect" } %>
                   </div>
 
                   <% if current_config["default_temperature"] %>
@@ -121,4 +138,3 @@
     </div>
   <% end %>
 </div>
-

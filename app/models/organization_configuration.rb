@@ -11,8 +11,8 @@ class OrganizationConfiguration < ApplicationRecord
   validates :features_config, presence: true
   validates :organization_id, uniqueness: true
 
-  # Set defaults on initialization
-  after_initialize :set_defaults, if: :new_record?
+  # Set defaults before validation
+  before_validation :set_defaults, on: :create
 
   # Default contexts configuration
   # Matches the structure in config/initializers/prompt_tracker.rb
@@ -58,7 +58,7 @@ class OrganizationConfiguration < ApplicationRecord
   private
 
   def set_defaults
-    self.contexts_config ||= DEFAULT_CONTEXTS.deep_stringify_keys
-    self.features_config ||= DEFAULT_FEATURES.deep_stringify_keys
+    self.contexts_config = DEFAULT_CONTEXTS.deep_stringify_keys if contexts_config.blank?
+    self.features_config = DEFAULT_FEATURES.deep_stringify_keys if features_config.blank?
   end
 end

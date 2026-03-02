@@ -1,0 +1,54 @@
+<div class="container">
+  <div class="row justify-content-center min-vh-100 align-items-center">
+    <div class="col-md-5 col-lg-4">
+      <div class="text-center mb-4">
+        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+          <i class="bi bi-shield-check text-success fs-1"></i>
+        </div>
+        <h1 class="h3 mb-2">Reset your password</h1>
+        <p class="text-muted">Enter your new password below</p>
+      </div>
+
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+            <%= render "devise/shared/error_messages", resource: resource %>
+            <%= f.hidden_field :reset_password_token %>
+
+            <div class="mb-3">
+              <%= f.label :password, "New Password", class: "form-label" %>
+              <%= f.password_field :password,
+                                   autofocus: true,
+                                   autocomplete: "new-password",
+                                   class: "form-control form-control-lg",
+                                   placeholder: "Enter new password" %>
+              <% if @minimum_password_length %>
+                <div class="form-text">
+                  Minimum <%= @minimum_password_length %> characters
+                </div>
+              <% end %>
+            </div>
+
+            <div class="mb-4">
+              <%= f.label :password_confirmation, "Confirm New Password", class: "form-label" %>
+              <%= f.password_field :password_confirmation,
+                                   autocomplete: "new-password",
+                                   class: "form-control form-control-lg",
+                                   placeholder: "Confirm new password" %>
+            </div>
+
+            <div class="d-grid">
+              <%= f.submit "Reset Password", class: "btn btn-success btn-lg" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="text-center mt-3">
+        <p class="text-muted mb-0">
+          <%= link_to "Back to sign in", new_session_path(resource_name), class: "text-decoration-none" %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
