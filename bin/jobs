@@ -3,5 +3,9 @@
 require_relative "../config/environment"
 require "sidekiq/cli"
 
-Sidekiq::CLI.instance.parse(ARGV)
+# Ensure Sidekiq loads the config file
+args = ARGV.dup
+args << "-C" << "config/sidekiq.yml" unless args.include?("-C")
+
+Sidekiq::CLI.instance.parse(args)
 Sidekiq::CLI.instance.run
