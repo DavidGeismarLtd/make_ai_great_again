@@ -40,10 +40,10 @@ module SetsLlmApiKeys
 
     org = ActsAsTenant.current_tenant
 
-    Rails.logger.info "[LLM API Keys] ========================================="
-    Rails.logger.info "[LLM API Keys] Setting ENV variables for organization: #{org.name} (ID: #{org.id}, Slug: #{org.slug})"
-    Rails.logger.info "[LLM API Keys] Request: #{request.method} #{request.path}" if respond_to?(:request)
-    Rails.logger.info "[LLM API Keys] ========================================="
+    Rails.logger.info "[MakeAIGreatAgain] [LLM API Keys] ========================================="
+    Rails.logger.info "[MakeAIGreatAgain] [LLM API Keys] Setting ENV variables for organization: #{org.name} (ID: #{org.id}, Slug: #{org.slug})"
+    Rails.logger.info "[MakeAIGreatAgain] [LLM API Keys] Request: #{request.method} #{request.path}" if respond_to?(:request)
+    Rails.logger.info "[MakeAIGreatAgain] [LLM API Keys] ========================================="
 
     # Map provider names to ENV variable names expected by RubyLLM
     provider_env_map = {
@@ -57,7 +57,7 @@ module SetsLlmApiKeys
     # This query is automatically scoped by acts_as_tenant
     api_configs = ApiConfiguration.active.to_a
 
-    Rails.logger.info "[LLM API Keys] Found #{api_configs.count} active API configuration(s)"
+    Rails.logger.info "[MakeAIGreatAgain] [LLM API Keys] Found #{api_configs.count} active API configuration(s)"
 
     api_configs.each do |api_config|
       env_var_name = provider_env_map[api_config.provider]
@@ -70,17 +70,17 @@ module SetsLlmApiKeys
       if api_key.present?
         ENV[env_var_name] = api_key
         masked_key = mask_api_key_for_logging(api_key)
-        Rails.logger.info "[LLM API Keys]   ✓ Set #{env_var_name} = #{masked_key} (from: #{api_config.key_name})"
+        Rails.logger.info "[MakeAIGreatAgain] [LLM API Keys]   ✓ Set #{env_var_name} = #{masked_key} (from: #{api_config.key_name})"
       else
-        Rails.logger.warn "[LLM API Keys]   ✗ Skipped #{env_var_name} - API key is empty (config: #{api_config.key_name})"
+        Rails.logger.warn "[MakeAIGreatAgain] [LLM API Keys]   ✗ Skipped #{env_var_name} - API key is empty (config: #{api_config.key_name})"
       end
     end
 
     if api_configs.empty?
-      Rails.logger.warn "[LLM API Keys] ⚠️  No active API configurations found - ENV variables not set"
+      Rails.logger.warn "[MakeAIGreatAgain] [LLM API Keys] ⚠️  No active API configurations found - ENV variables not set"
     end
 
-    Rails.logger.info "[LLM API Keys] ========================================="
+    Rails.logger.info "[MakeAIGreatAgain] [LLM API Keys] ========================================="
   end
 
   # Mask API key for logging (show first 7 chars + last 4 chars)

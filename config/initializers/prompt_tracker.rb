@@ -38,13 +38,13 @@ PromptTracker.configure do |config|
     # Return empty hash to use static fallbacks when no org context
     # (e.g., in console, background jobs without tenant context)
     unless org
-      Rails.logger.info "[PromptTracker Config] No current tenant set - using static fallback configuration"
+      Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] No current tenant set - using static fallback configuration"
       return {}
     end
 
-    Rails.logger.info "[PromptTracker Config] ========================================="
-    Rails.logger.info "[PromptTracker Config] Building configuration for organization: #{org.name} (#{org.slug})"
-    Rails.logger.info "[PromptTracker Config] ========================================="
+    Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] ========================================="
+    Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] Building configuration for organization: #{org.name} (#{org.slug})"
+    Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] ========================================="
 
     # Build dynamic configuration hash
     config_hash = {
@@ -58,8 +58,8 @@ PromptTracker.configure do |config|
       features: build_features_for_organization(org)
     }
 
-    Rails.logger.info "[PromptTracker Config] Configuration built successfully"
-    Rails.logger.info "[PromptTracker Config] Providers hash keys: #{config_hash[:providers].keys.inspect}"
+    Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] Configuration built successfully"
+    Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] Providers hash keys: #{config_hash[:providers].keys.inspect}"
 
     # Log what RubyLLM will receive (simulating ruby_llm_config method)
     provider_key_mapping = {
@@ -74,8 +74,8 @@ PromptTracker.configure do |config|
         ruby_llm_config_preview[config_key] = mask_api_key(api_key)
       end
     end
-    Rails.logger.info "[PromptTracker Config] RubyLLM config preview: #{ruby_llm_config_preview.inspect}"
-    Rails.logger.info "[PromptTracker Config] ========================================="
+    Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] RubyLLM config preview: #{ruby_llm_config_preview.inspect}"
+    Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] ========================================="
 
     config_hash
   }
@@ -171,8 +171,8 @@ def build_providers_for_organization(org)
   api_configs = ApiConfiguration.active.to_a
 
   # Log configuration loading
-  Rails.logger.info "[PromptTracker Config] Loading providers for organization: #{org.name} (ID: #{org.id}, Slug: #{org.slug})"
-  Rails.logger.info "[PromptTracker Config] Found #{api_configs.count} active API configuration(s)"
+  Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] Loading providers for organization: #{org.name} (ID: #{org.id}, Slug: #{org.slug})"
+  Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] Found #{api_configs.count} active API configuration(s)"
 
   api_configs.each do |api_config|
     provider_key = api_config.provider.to_sym
@@ -183,11 +183,11 @@ def build_providers_for_organization(org)
     }
 
     # Log each provider configuration (with masked key)
-    Rails.logger.info "[PromptTracker Config]   - Provider: #{provider_key}, Key Name: #{api_config.key_name}, API Key: #{mask_api_key(api_key)}"
+    Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config]   - Provider: #{provider_key}, Key Name: #{api_config.key_name}, API Key: #{mask_api_key(api_key)}"
   end
 
   if providers.empty?
-    Rails.logger.warn "[PromptTracker Config] ⚠️  No active API configurations found for organization: #{org.name}"
+    Rails.logger.warn "[MakeAIGreatAgain] [PromptTracker Config] ⚠️  No active API configurations found for organization: #{org.name}"
   end
 
   providers
