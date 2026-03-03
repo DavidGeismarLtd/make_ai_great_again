@@ -7,6 +7,8 @@
 # Queues to process (in order of priority)
 :queues:
   - critical
+  - prompt_tracker_tests
+  - prompt_tracker_dataset_generation
   - default
   - mailers
   - low
@@ -22,6 +24,8 @@ production:
   :concurrency: 10
   :queues:
     - [critical, 3]
+    - [prompt_tracker_tests, 2]
+    - [prompt_tracker_dataset_generation, 2]
     - [default, 2]
     - [mailers, 1]
     - [low, 1]
@@ -30,6 +34,8 @@ production:
 development:
   :concurrency: 3
   :queues:
+    - prompt_tracker_tests
+    - prompt_tracker_dataset_generation
     - default
     - mailers
     - low
@@ -39,4 +45,3 @@ test:
   :concurrency: 1
   :queues:
     - default
-
