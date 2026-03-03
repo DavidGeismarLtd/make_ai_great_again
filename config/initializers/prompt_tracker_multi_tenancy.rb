@@ -34,10 +34,7 @@ Rails.application.config.to_prepare do
 
   models_to_configure.each do |model_file|
     begin
-      # Require the model file to ensure it's loaded
-      require_dependency "prompt_tracker/#{model_file}"
-
-      # Get the model class
+      # Get the model class (this will autoload it if needed)
       model_class = "PromptTracker::#{model_file.camelize}".constantize
 
       # Skip if already configured (check for organization association added by acts_as_tenant)
@@ -52,10 +49,9 @@ Rails.application.config.to_prepare do
         next
       end
 
-      # Add acts_as_tenant
-      model_class.class_eval do
-        acts_as_tenant :organization
-      end
+      # Add acts_as_tenant using send to avoid reopening the class
+      # This preserves all existing methods including private ones
+      model_class.acts_as_tenant :organization
 
       Rails.logger.info "✓ Configured acts_as_tenant for PromptTracker::#{model_file.camelize}"
     rescue LoadError => e
