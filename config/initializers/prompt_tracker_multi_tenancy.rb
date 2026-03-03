@@ -16,8 +16,8 @@ Rails.application.config.to_prepare do
   # We need to explicitly require each model and then configure it
 
   # List of PromptTracker models that have organization_id
-  # Note: Evaluation is excluded because it doesn't have organization_id
-  # (it's scoped through llm_response or test_run associations)
+  # Note: All these models have organization_id added via migration
+  # (see db/migrate/20260225100645_add_organization_id_to_prompt_tracker_tables.rb)
   models_to_configure = %w[
     prompt
     prompt_version
@@ -25,6 +25,7 @@ Rails.application.config.to_prepare do
     test_run
     dataset
     dataset_row
+    evaluation
     evaluator_config
     human_evaluation
     llm_response
