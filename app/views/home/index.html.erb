@@ -5,21 +5,53 @@
   <section class="hero-section">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-lg-8 mx-auto text-center">
-          <h1 class="hero-title">Build, Test, and Monitor AI Agents at Scale</h1>
-          <p class="hero-subtitle">
-            The complete platform for developing reliable AI agents.
-            Version control your agent configurations, run automated tests,
-            and monitor performance in real-time.
-          </p>
-          <div class="hero-cta mt-4">
-            <%= link_to "Get Started Free", new_user_registration_path, class: "btn btn-primary btn-lg me-3" %>
-            <%= link_to "View Documentation", "#how-it-works", class: "btn btn-outline-light btn-lg" %>
+        <div class="col-lg-10 col-xl-9 mx-auto text-center">
+          <div class="hero-badge mb-4">
+            <span class="badge-text">🚀 The Future of AI Agent Development</span>
           </div>
-          <div class="hero-features mt-4">
-            <span class="hero-feature-item"><i class="bi bi-check-circle-fill me-1"></i> Multi-LLM support</span>
-            <span class="hero-feature-item"><i class="bi bi-check-circle-fill me-1"></i> Automated testing</span>
-            <span class="hero-feature-item"><i class="bi bi-check-circle-fill me-1"></i> Real-time monitoring</span>
+          <h1 class="hero-title">Build, Test, and Monitor<br>AI Agents at Scale</h1>
+          <p class="hero-subtitle">
+            The complete platform for developing reliable AI agents.<br>
+            Version control your configurations, run automated tests, and monitor performance in real-time.
+          </p>
+          <div class="hero-cta">
+            <%= link_to new_user_registration_path, class: "btn btn-primary btn-lg" do %>
+              <span>Get Started Free</span>
+              <i class="bi bi-arrow-right ms-2"></i>
+            <% end %>
+            <%= link_to "#how-it-works", class: "btn btn-outline-light btn-lg" do %>
+              <span>See How It Works</span>
+            <% end %>
+          </div>
+          <div class="hero-features">
+            <div class="hero-feature-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>Multi-LLM Support</span>
+            </div>
+            <div class="hero-feature-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>Automated Testing</span>
+            </div>
+            <div class="hero-feature-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>Real-time Monitoring</span>
+            </div>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-number">10K+</div>
+              <div class="stat-label">Tests Run Daily</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <div class="stat-number">5+</div>
+              <div class="stat-label">LLM Providers</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <div class="stat-number">99.9%</div>
+              <div class="stat-label">Uptime</div>
+            </div>
           </div>
         </div>
       </div>
@@ -27,95 +59,138 @@
   </section>
 
   <%# Features Section %>
-  <section class="features-section py-5">
+  <section class="features-section">
     <div class="container">
-      <div class="text-center mb-5">
-        <h2 class="section-title">Everything You Need to Build Production-Ready AI Agents</h2>
+      <div class="section-header text-center">
+        <span class="section-label">FEATURES</span>
+        <h2 class="section-title">Everything You Need to Build<br>Production-Ready AI Agents</h2>
         <p class="section-subtitle">Powerful tools for the entire agent development lifecycle</p>
       </div>
 
-      <div class="row g-4">
+      <div class="row g-5">
         <%# Feature 1: Agent Development %>
         <div class="col-md-6 col-lg-4">
           <div class="feature-card">
-            <div class="feature-icon">
-              <i class="bi bi-robot"></i>
+            <div class="feature-icon-wrapper">
+              <div class="feature-icon">
+                <i class="bi bi-robot"></i>
+              </div>
             </div>
             <h3 class="feature-title">Agent Development</h3>
             <p class="feature-description">
               Build and iterate on AI agents with full version control. Track every change,
-              roll back when needed, and collaborate with your team.
+              roll back when needed, and collaborate with your team seamlessly.
             </p>
+            <ul class="feature-list">
+              <li>Version control for all configurations</li>
+              <li>Rollback to any previous state</li>
+              <li>Team collaboration tools</li>
+            </ul>
           </div>
         </div>
 
         <%# Feature 2: Performance Analytics %>
         <div class="col-md-6 col-lg-4">
           <div class="feature-card">
-            <div class="feature-icon">
-              <i class="bi bi-graph-up"></i>
+            <div class="feature-icon-wrapper">
+              <div class="feature-icon">
+                <i class="bi bi-graph-up"></i>
+              </div>
             </div>
             <h3 class="feature-title">Performance Analytics</h3>
             <p class="feature-description">
               Monitor agent behavior, costs, and response quality in real-time.
-              Get insights into what's working and what needs improvement.
+              Get actionable insights into what's working and what needs improvement.
             </p>
+            <ul class="feature-list">
+              <li>Real-time performance metrics</li>
+              <li>Cost tracking and optimization</li>
+              <li>Quality scoring and alerts</li>
+            </ul>
           </div>
         </div>
 
         <%# Feature 3: Automated Testing %>
         <div class="col-md-6 col-lg-4">
           <div class="feature-card">
-            <div class="feature-icon">
-              <i class="bi bi-check2-square"></i>
+            <div class="feature-icon-wrapper">
+              <div class="feature-icon">
+                <i class="bi bi-check2-square"></i>
+              </div>
             </div>
             <h3 class="feature-title">Automated Testing</h3>
             <p class="feature-description">
               Test agents against real-world scenarios before deployment.
-              Catch issues early and ship with confidence.
+              Catch issues early and ship with complete confidence.
             </p>
+            <ul class="feature-list">
+              <li>Automated test suites</li>
+              <li>Regression testing</li>
+              <li>CI/CD integration</li>
+            </ul>
           </div>
         </div>
 
         <%# Feature 4: A/B Testing %>
         <div class="col-md-6 col-lg-4">
           <div class="feature-card">
-            <div class="feature-icon">
-              <i class="bi bi-shuffle"></i>
+            <div class="feature-icon-wrapper">
+              <div class="feature-icon">
+                <i class="bi bi-shuffle"></i>
+              </div>
             </div>
             <h3 class="feature-title">A/B Testing</h3>
             <p class="feature-description">
               Compare agent configurations side-by-side. Make data-driven decisions
-              about which approach works best.
+              about which approach delivers the best results.
             </p>
+            <ul class="feature-list">
+              <li>Side-by-side comparisons</li>
+              <li>Statistical significance testing</li>
+              <li>Performance benchmarking</li>
+            </ul>
           </div>
         </div>
 
         <%# Feature 5: Multi-LLM Support %>
         <div class="col-md-6 col-lg-4">
           <div class="feature-card">
-            <div class="feature-icon">
-              <i class="bi bi-layers"></i>
+            <div class="feature-icon-wrapper">
+              <div class="feature-icon">
+                <i class="bi bi-layers"></i>
+              </div>
             </div>
             <h3 class="feature-title">Multi-LLM Support</h3>
             <p class="feature-description">
               Switch between OpenAI, Anthropic, Google, and Azure seamlessly.
-              Test the same agent across different providers.
+              Test the same agent across different providers effortlessly.
             </p>
+            <ul class="feature-list">
+              <li>5+ LLM providers supported</li>
+              <li>Unified API interface</li>
+              <li>Cross-provider testing</li>
+            </ul>
           </div>
         </div>
 
         <%# Feature 6: Team Collaboration %>
         <div class="col-md-6 col-lg-4">
           <div class="feature-card">
-            <div class="feature-icon">
-              <i class="bi bi-people"></i>
+            <div class="feature-icon-wrapper">
+              <div class="feature-icon">
+                <i class="bi bi-people"></i>
+              </div>
             </div>
             <h3 class="feature-title">Team Collaboration</h3>
             <p class="feature-description">
               Build agents together with role-based access control.
-              Share templates and best practices across your organization.
+              Share templates and best practices across your entire organization.
             </p>
+            <ul class="feature-list">
+              <li>Role-based permissions</li>
+              <li>Shared template library</li>
+              <li>Activity audit logs</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -123,52 +198,71 @@
   </section>
 
   <%# Use Cases Section %>
-  <section class="use-cases-section py-5 bg-light">
+  <section class="use-cases-section">
     <div class="container">
-      <div class="text-center mb-5">
+      <div class="section-header text-center">
+        <span class="section-label">USE CASES</span>
         <h2 class="section-title">Built for Teams of All Sizes</h2>
         <p class="section-subtitle">From solo developers to enterprise teams</p>
       </div>
 
-      <div class="row g-4">
+      <div class="row g-5">
         <%# For AI Developers %>
-        <div class="col-md-4">
+        <div class="col-lg-4">
           <div class="use-case-card">
-            <div class="use-case-icon">💻</div>
+            <div class="use-case-icon-wrapper">
+              <div class="use-case-icon">💻</div>
+            </div>
             <h3 class="use-case-title">For AI Developers</h3>
+            <p class="use-case-description">
+              Everything you need to build, test, and iterate on AI agents quickly and confidently.
+            </p>
             <ul class="use-case-list">
               <li>Iterate on agent prompts and configurations</li>
               <li>Test agent behavior before production</li>
               <li>Track agent performance over time</li>
               <li>Debug issues with detailed logs</li>
+              <li>Compare different model providers</li>
             </ul>
           </div>
         </div>
 
         <%# For Product Teams %>
-        <div class="col-md-4">
+        <div class="col-lg-4">
           <div class="use-case-card">
-            <div class="use-case-icon">🚀</div>
+            <div class="use-case-icon-wrapper">
+              <div class="use-case-icon">🚀</div>
+            </div>
             <h3 class="use-case-title">For Product Teams</h3>
+            <p class="use-case-description">
+              Collaborate seamlessly and maintain consistency across all your AI-powered products.
+            </p>
             <ul class="use-case-list">
               <li>Collaborate on agent development</li>
               <li>Share agent templates and best practices</li>
               <li>Maintain agent library across products</li>
               <li>Ensure consistent agent quality</li>
+              <li>Streamline deployment workflows</li>
             </ul>
           </div>
         </div>
 
         <%# For Enterprises %>
-        <div class="col-md-4">
+        <div class="col-lg-4">
           <div class="use-case-card">
-            <div class="use-case-icon">🏢</div>
+            <div class="use-case-icon-wrapper">
+              <div class="use-case-icon">🏢</div>
+            </div>
             <h3 class="use-case-title">For Enterprises</h3>
+            <p class="use-case-description">
+              Enterprise-grade security, compliance, and governance for your AI agent infrastructure.
+            </p>
             <ul class="use-case-list">
               <li>Governance and compliance for AI agents</li>
               <li>Cost control and budget monitoring</li>
               <li>Complete audit trail for all interactions</li>
               <li>Enterprise-grade security and privacy</li>
+              <li>SSO and advanced access controls</li>
             </ul>
           </div>
         </div>
@@ -177,76 +271,109 @@
   </section>
 
   <%# How It Works Section %>
-  <section class="how-it-works-section py-5" id="how-it-works">
+  <section class="how-it-works-section" id="how-it-works">
     <div class="container">
-      <div class="text-center mb-5">
-        <h2 class="section-title">How It Works</h2>
-        <p class="section-subtitle">Get started in minutes, not hours</p>
+      <div class="section-header text-center">
+        <span class="section-label">HOW IT WORKS</span>
+        <h2 class="section-title">Get Started in Minutes</h2>
+        <p class="section-subtitle">Four simple steps to production-ready AI agents</p>
       </div>
 
-      <div class="row g-4">
-        <%# Step 1 %>
-        <div class="col-md-6 col-lg-3">
-          <div class="step-card">
-            <div class="step-number">1</div>
-            <h3 class="step-title">Connect Your LLM Providers</h3>
-            <p class="step-description">
-              Add API keys for OpenAI, Anthropic, Google, Azure, and more.
-              We support all major LLM providers.
-            </p>
+      <div class="steps-container">
+        <div class="row g-5">
+          <%# Step 1 %>
+          <div class="col-md-6 col-lg-3">
+            <div class="step-card">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h3 class="step-title">Connect Your LLM Providers</h3>
+                <p class="step-description">
+                  Add API keys for OpenAI, Anthropic, Google, Azure, and more.
+                  We support all major LLM providers out of the box.
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <%# Step 2 %>
-        <div class="col-md-6 col-lg-3">
-          <div class="step-card">
-            <div class="step-number">2</div>
-            <h3 class="step-title">Design Your Agents</h3>
-            <p class="step-description">
-              Create agents with prompts, tools, and configurations.
-              Version control everything automatically.
-            </p>
+          <%# Step 2 %>
+          <div class="col-md-6 col-lg-3">
+            <div class="step-card">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h3 class="step-title">Design Your Agents</h3>
+                <p class="step-description">
+                  Create agents with prompts, tools, and configurations.
+                  Everything is version controlled automatically.
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <%# Step 3 %>
-        <div class="col-md-6 col-lg-3">
-          <div class="step-card">
-            <div class="step-number">3</div>
-            <h3 class="step-title">Test & Validate</h3>
-            <p class="step-description">
-              Run automated tests to ensure agent reliability.
-              Catch issues before they reach production.
-            </p>
+          <%# Step 3 %>
+          <div class="col-md-6 col-lg-3">
+            <div class="step-card">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h3 class="step-title">Test & Validate</h3>
+                <p class="step-description">
+                  Run automated tests to ensure agent reliability.
+                  Catch issues before they reach production.
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <%# Step 4 %>
-        <div class="col-md-6 col-lg-3">
-          <div class="step-card">
-            <div class="step-number">4</div>
-            <h3 class="step-title">Deploy & Monitor</h3>
-            <p class="step-description">
-              Track agent performance in real-time.
-              Monitor costs, latency, and quality metrics.
-            </p>
+          <%# Step 4 %>
+          <div class="col-md-6 col-lg-3">
+            <div class="step-card">
+              <div class="step-number">4</div>
+              <div class="step-content">
+                <h3 class="step-title">Deploy & Monitor</h3>
+                <p class="step-description">
+                  Track agent performance in real-time.
+                  Monitor costs, latency, and quality metrics.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
+        <div class="steps-connector"></div>
       </div>
     </div>
   </section>
 
   <%# CTA Section %>
-  <section class="cta-section py-5">
+  <section class="cta-section">
     <div class="container">
       <div class="row">
-        <div class="col-lg-8 mx-auto text-center">
-          <h2 class="cta-title">Ready to Build Better AI Agents?</h2>
-          <p class="cta-subtitle">
-            Join developers and teams building production-ready AI agents with confidence.
-          </p>
-          <%= link_to "Get Started Free", new_user_registration_path, class: "btn btn-primary btn-lg mt-3" %>
-          <p class="cta-note mt-3">No credit card required • 14-day free trial</p>
+        <div class="col-lg-10 col-xl-8 mx-auto text-center">
+          <div class="cta-content">
+            <h2 class="cta-title">Ready to Build Better AI Agents?</h2>
+            <p class="cta-subtitle">
+              Join thousands of developers and teams building production-ready AI agents with confidence.
+              Start testing your agents today—no credit card required.
+            </p>
+            <div class="cta-buttons">
+              <%= link_to new_user_registration_path, class: "btn btn-primary btn-lg" do %>
+                <span>Get Started Free</span>
+                <i class="bi bi-arrow-right ms-2"></i>
+              <% end %>
+            </div>
+            <div class="cta-features">
+              <div class="cta-feature">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>No credit card required</span>
+              </div>
+              <div class="cta-feature">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>14-day free trial</span>
+              </div>
+              <div class="cta-feature">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Cancel anytime</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
