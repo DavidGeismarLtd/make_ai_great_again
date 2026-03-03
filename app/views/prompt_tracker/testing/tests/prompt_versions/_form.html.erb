@@ -1,0 +1,19 @@
+<%# Override of PromptTracker gem's view to include org_slug in URL generation %>
+<%# Original: PromptTracker (9ae3f09de9c4) app/views/prompt_tracker/testing/tests/prompt_versions/_form.html.erb %>
+
+<% test ||= @test %>
+<% version ||= test.testable %>
+<% in_modal ||= false %>
+
+<% 
+  # Generate form URL with org_slug parameter
+  # The engine's route helpers need org_slug explicitly when called directly
+  form_url = if test.new_record?
+    testing_prompt_version_tests_path(version, org_slug: current_organization.slug)
+  else
+    testing_prompt_version_test_path(version, test, org_slug: current_organization.slug)
+  end
+%>
+
+<%= render "prompt_tracker/testing/tests/form", test: test, in_modal: in_modal, form_url: form_url %>
+
