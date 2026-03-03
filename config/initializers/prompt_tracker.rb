@@ -23,7 +23,17 @@ PromptTracker.configure do |config|
   config.basic_auth_password = nil
 
   # ===========================================================================
-  # 2. DYNAMIC CONFIGURATION PROVIDER
+  # 2. URL OPTIONS PROVIDER (for multi-tenant URL generation)
+  # ===========================================================================
+  # This lambda provides URL parameters needed for organization-scoped routes.
+  # The engine is mounted under /orgs/:org_slug/app, so we need to provide
+  # the org_slug parameter for all URL generation.
+  config.url_options_provider = -> {
+    { org_slug: ActsAsTenant.current_tenant&.slug }
+  }
+
+  # ===========================================================================
+  # 3. DYNAMIC CONFIGURATION PROVIDER
   # ===========================================================================
   # This lambda is called at runtime to get organization-specific configuration.
   # It returns a hash with providers, contexts, and features for the current org.

@@ -16,16 +16,8 @@ module PromptTracker
     # All PromptTracker controllers now inherit from the host app's ApplicationController
     # No additional configuration needed - they automatically get all the host app's
     # before_actions, helper methods, and concerns
-
-    # Override default_url_options to include org_slug in all URL generation
-    # This is necessary because the engine is mounted under /orgs/:org_slug/app
-    # and the engine's views don't know about the org_slug requirement
-    def default_url_options
-      if current_organization.present?
-        super.merge(org_slug: current_organization.slug)
-      else
-        super
-      end
-    end
+    #
+    # Note: URL generation for multi-tenant routes is handled by the PromptTracker gem's
+    # url_options_provider configuration (see config/initializers/prompt_tracker.rb)
   end
 end
