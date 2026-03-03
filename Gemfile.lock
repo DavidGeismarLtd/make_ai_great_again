@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/DavidGeismarLtd/PromptTracker.git
-  revision: bf47f4c0ba88f4501e17e15837b84acbf9cd8c94
+  revision: 9ae3f09de9c4cb6882c1de19ae7136f2a29efae5
   specs:
     prompt_tracker (0.1.0)
       groupdate (~> 6.0)
