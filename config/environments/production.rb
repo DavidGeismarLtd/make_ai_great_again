@@ -33,8 +33,15 @@ Rails.application.configure do
   # Skip http-to-https redirect for the default health check endpoint.
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
-  # Log to STDOUT with the current request id as a default log tag.
-  config.log_tags = [ :request_id ]
+  # Log to STDOUT with the current request id and organization as default log tags.
+  config.log_tags = [
+    :request_id,
+    lambda { |request|
+      # Add organization slug to logs for easier debugging
+      org = ActsAsTenant.current_tenant rescue nil
+      org ? "org:#{org.slug}" : "org:none"
+    }
+  ]
   config.logger   = ActiveSupport::TaggedLogging.logger(STDOUT)
 
   # Change to "debug" to log everything (including potentially personally-identifiable information!).

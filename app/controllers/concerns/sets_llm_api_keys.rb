@@ -38,6 +38,13 @@ module SetsLlmApiKeys
   def set_llm_api_keys
     return unless ActsAsTenant.current_tenant
 
+    org = ActsAsTenant.current_tenant
+
+    Rails.logger.info "[LLM API Keys] ========================================="
+    Rails.logger.info "[LLM API Keys] Setting ENV variables for organization: #{org.name} (ID: #{org.id}, Slug: #{org.slug})"
+    Rails.logger.info "[LLM API Keys] Request: #{request.method} #{request.path}" if respond_to?(:request)
+    Rails.logger.info "[LLM API Keys] ========================================="
+
     # Map provider names to ENV variable names expected by RubyLLM
     provider_env_map = {
       "openai" => "OPENAI_API_KEY",
@@ -48,13 +55,40 @@ module SetsLlmApiKeys
 
     # Fetch all active API configurations for the current organization
     # This query is automatically scoped by acts_as_tenant
-    ApiConfiguration.active.each do |api_config|
+    api_configs = ApiConfiguration.active.to_a
+
+    Rails.logger.info "[LLM API Keys] Found #{api_configs.count} active API configuration(s)"
+
+    api_configs.each do |api_config|
       env_var_name = provider_env_map[api_config.provider]
       next unless env_var_name
 
       # Set the ENV variable with the decrypted API key
       # Rails automatically decrypts the encrypted_api_key attribute
-      ENV[env_var_name] = api_config.encrypted_api_key if api_config.encrypted_api_key.present?
+      api_key = api_config.encrypted_api_key
+
+      if api_key.present?
+        ENV[env_var_name] = api_key
+        masked_key = mask_api_key_for_logging(api_key)
+        Rails.logger.info "[LLM API Keys]   ✓ Set #{env_var_name} = #{masked_key} (from: #{api_config.key_name})"
+      else
+        Rails.logger.warn "[LLM API Keys]   ✗ Skipped #{env_var_name} - API key is empty (config: #{api_config.key_name})"
+      end
     end
+
+    if api_configs.empty?
+      Rails.logger.warn "[LLM API Keys] ⚠️  No active API configurations found - ENV variables not set"
+    end
+
+    Rails.logger.info "[LLM API Keys] ========================================="
+  end
+
+  # Mask API key for logging (show first 7 chars + last 4 chars)
+  def mask_api_key_for_logging(key)
+    return "nil" if key.nil?
+    return "empty" if key.empty?
+    return key if key.length < 10
+
+    "#{key[0..6]}...#{key[-4..]}"
   end
 end

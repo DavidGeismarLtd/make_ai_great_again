@@ -28,6 +28,16 @@ Rails.application.configure do
   # Change to :null_store to avoid any caching.
   config.cache_store = :memory_store
 
+  # Add log tags for better debugging (includes organization slug)
+  config.log_tags = [
+    :request_id,
+    lambda { |request|
+      # Add organization slug to logs for easier debugging
+      org = ActsAsTenant.current_tenant rescue nil
+      org ? "org:#{org.slug}" : "org:none"
+    }
+  ]
+
   # Devise mailer configuration
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
