@@ -59,6 +59,22 @@ PromptTracker.configure do |config|
     }
 
     Rails.logger.info "[PromptTracker Config] Configuration built successfully"
+    Rails.logger.info "[PromptTracker Config] Providers hash keys: #{config_hash[:providers].keys.inspect}"
+
+    # Log what RubyLLM will receive (simulating ruby_llm_config method)
+    provider_key_mapping = {
+      openai: :openai_api_key,
+      anthropic: :anthropic_api_key,
+      google: :gemini_api_key
+    }
+    ruby_llm_config_preview = {}
+    provider_key_mapping.each do |provider, config_key|
+      api_key = config_hash[:providers].dig(provider, :api_key)
+      if api_key.present?
+        ruby_llm_config_preview[config_key] = mask_api_key(api_key)
+      end
+    end
+    Rails.logger.info "[PromptTracker Config] RubyLLM config preview: #{ruby_llm_config_preview.inspect}"
     Rails.logger.info "[PromptTracker Config] ========================================="
 
     config_hash
