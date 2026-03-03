@@ -38,8 +38,9 @@ Rails.application.configure do
     :request_id,
     lambda { |request|
       # Add organization slug to logs for easier debugging
-      org = ActsAsTenant.current_tenant rescue nil
-      org ? "org:#{org.slug}" : "org:none"
+      # Extract from request params since ActsAsTenant.current_tenant is not set yet at this point
+      org_slug = request.params[:org_slug] || request.path_parameters[:org_slug]
+      org_slug ? "org:#{org_slug}" : "org:none"
     }
   ]
   config.logger   = ActiveSupport::TaggedLogging.logger(STDOUT)
