@@ -208,8 +208,25 @@ def build_contexts_for_organization(org)
   org_config = org.organization_configuration
   return {} unless org_config
 
-  # Convert string keys to symbols for PromptTracker
-  org_config.contexts_config.deep_symbolize_keys
+  # Convert string keys to symbols and ensure numeric values are properly typed
+  contexts = org_config.contexts_config.deep_symbolize_keys
+
+  # Type coercion: Convert string numeric values to proper types
+  # This is necessary because JSONB stores numbers as strings when saved from forms
+  contexts.each do |context_key, context_config|
+    next unless context_config.is_a?(Hash)
+
+    context_config.each do |key, value|
+      # Convert temperature, max_tokens, top_p, etc. from strings to numbers
+      if key.to_s.include?("temperature") || key.to_s.include?("top_p")
+        contexts[context_key][key] = value.to_f if value.is_a?(String)
+      elsif key.to_s.include?("max_tokens") || key.to_s.include?("max_")
+        contexts[context_key][key] = value.to_i if value.is_a?(String)
+      end
+    end
+  end
+
+  contexts
 end
 
 # Build features hash from database
