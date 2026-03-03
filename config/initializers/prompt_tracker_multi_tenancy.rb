@@ -16,6 +16,8 @@ Rails.application.config.to_prepare do
   # We need to explicitly require each model and then configure it
 
   # List of PromptTracker models that have organization_id
+  # Note: Evaluation is excluded because it doesn't have organization_id
+  # (it's scoped through llm_response or test_run associations)
   models_to_configure = %w[
     prompt
     prompt_version
@@ -23,7 +25,6 @@ Rails.application.config.to_prepare do
     test_run
     dataset
     dataset_row
-    evaluation
     evaluator_config
     human_evaluation
     llm_response
@@ -41,6 +42,12 @@ Rails.application.config.to_prepare do
       # Skip if already configured (check for organization association added by acts_as_tenant)
       if model_class.reflect_on_association(:organization)&.options&.dig(:inverse_of) == :acts_as_tenant
         Rails.logger.debug "⏭ Skipping PromptTracker::#{model_file.camelize} (already configured)"
+        next
+      end
+
+      # Check if the model has an organization_id column
+      unless model_class.column_names.include?("organization_id")
+        Rails.logger.debug "⏭ Skipping PromptTracker::#{model_file.camelize} (no organization_id column)"
         next
       end
 
