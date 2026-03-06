@@ -8,6 +8,7 @@
 :queues:
   - critical
   - prompt_tracker_tests
+  - prompt_tracker_test_generation
   - prompt_tracker_dataset_generation
   - default
   - mailers
@@ -25,6 +26,7 @@ production:
   :queues:
     - [critical, 3]
     - [prompt_tracker_tests, 2]
+    - [prompt_tracker_test_generation, 2]
     - [prompt_tracker_dataset_generation, 2]
     - [default, 2]
     - [mailers, 1]
@@ -35,6 +37,7 @@ development:
   :concurrency: 3
   :queues:
     - prompt_tracker_tests
+    - prompt_tracker_test_generation
     - prompt_tracker_dataset_generation
     - default
     - mailers
