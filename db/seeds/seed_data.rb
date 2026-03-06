@@ -4,16 +4,17 @@
 # This allows us to split seeds into multiple files while maintaining references
 class SeedData
   class << self
-    attr_accessor :organizations, :users, :prompt_versions
+    attr_accessor :organizations, :users, :prompt_versions, :tests, :datasets
 
     def reset!
       @organizations = {}
       @users = {}
       @prompt_versions = {}
+      @tests = {}
+      @datasets = {}
     end
   end
 end
 
 # Initialize
 SeedData.reset!
-
