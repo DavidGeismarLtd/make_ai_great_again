@@ -14,8 +14,8 @@ redis_config = {
 Sidekiq.configure_server do |config|
   config.redis = redis_config
 
-  # Enable strict argument checking
-  config.strict_args!
+  # Note: Strict argument checking is enabled by default in Sidekiq 7+
+  # No need to call config.strict_args! - it will cause an error
 
   # Configure ActiveRecord connection pool
   # Sidekiq uses 10 connections by default (concurrency + 2)
@@ -26,9 +26,10 @@ Sidekiq.configure_server do |config|
 
       # Set pool size to match Sidekiq concurrency + 2
       # This ensures enough connections for all Sidekiq threads
+      # In Sidekiq 7+, use config[:concurrency] instead of Sidekiq.options[:concurrency]
       ActiveRecord::Base.establish_connection(
         ActiveRecord::Base.connection_db_config.configuration_hash.merge(
-          pool: Sidekiq.options[:concurrency] + 2
+          pool: config[:concurrency] + 2
         )
       )
     end
@@ -50,4 +51,3 @@ Sidekiq.logger.level = Logger::INFO if Rails.env.production?
 #     Rails.logger.error("Sidekiq error: #{ex.message}")
 #   }
 # end
-
