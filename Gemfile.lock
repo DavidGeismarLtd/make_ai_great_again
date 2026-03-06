@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/DavidGeismarLtd/PromptTracker.git
-  revision: 843761bd416081757857af96f3e6e163d3c8492f
+  revision: ecf40bf5f3ce576f01a129777d19408f82fd9280
   specs:
     prompt_tracker (0.1.0)
       groupdate (~> 6.0)
@@ -195,7 +195,7 @@ GEM
     jbuilder (2.14.1)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
-    json (2.18.1)
+    json (2.19.0)
     kamal (2.10.1)
       activesupport (>= 7.0)
       base64 (~> 0.2)

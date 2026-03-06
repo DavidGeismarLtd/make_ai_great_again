@@ -13,6 +13,10 @@
 # the host application's authentication and authorization setup.
 module PromptTracker
   class ApplicationController < ::ApplicationController
+    # Re-declare helpers from the gem since we're overriding the base controller
+    helper PromptTracker::DatasetsHelper
+    helper PromptTracker::TestsHelper
+    helper PromptTracker::UrlHelper
     # All PromptTracker controllers now inherit from the host app's ApplicationController
     # No additional configuration needed - they automatically get all the host app's
     # before_actions, helper methods, and concerns
