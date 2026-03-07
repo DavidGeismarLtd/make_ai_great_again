@@ -52,20 +52,18 @@ services:
           name: make-ai-great-again-redis
           property: connectionString
 
+  # Redis instance for Sidekiq and caching
+  # Note: Render's free Redis plan is limited. Consider upgrading for production.
+  # Alternatively, use an external Redis provider like Upstash or Redis Cloud.
+  - type: redis
+    name: make-ai-great-again-redis
+    plan: free  # Limited to 25MB, upgrade for production
+    maxmemoryPolicy: allkeys-lru  # Evict least recently used keys when full
+    ipAllowList: []  # Only allow internal connections from your Render services
+
 databases:
   # PostgreSQL Database
   - name: make-ai-great-again-db
     plan: free  # Change to 'starter' or higher for production
     databaseName: make_ai_great_again_db
     user: make_ai_great_again_user
-
-# Redis instance for Sidekiq and caching
-# Note: Render's free Redis plan is limited. Consider upgrading for production.
-# Alternatively, use an external Redis provider like Upstash or Redis Cloud.
-# To use this, uncomment the section below:
-#
-# - type: redis
-#   name: make-ai-great-again-redis
-#   plan: free  # Limited to 25MB, upgrade for production
-#   maxmemoryPolicy: allkeys-lru  # Evict least recently used keys when full
-
