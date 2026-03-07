@@ -26,7 +26,7 @@ services:
         value: production
       - key: REDIS_URL
         fromService:
-          type: redis
+          type: keyvalue
           name: make-ai-great-again-redis
           property: connectionString
 
@@ -48,17 +48,17 @@ services:
         value: production
       - key: REDIS_URL
         fromService:
-          type: redis
+          type: keyvalue
           name: make-ai-great-again-redis
           property: connectionString
 
   # Redis instance for Sidekiq and caching
   # Note: Render's free Redis plan is limited. Consider upgrading for production.
-  # Alternatively, use an external Redis provider like Upstash or Redis Cloud.
-  - type: redis
+  # Using 'keyvalue' type (Redis-compatible) as per Render documentation
+  - type: keyvalue
     name: make-ai-great-again-redis
     plan: free  # Limited to 25MB, upgrade for production
-    maxmemoryPolicy: allkeys-lru  # Evict least recently used keys when full
+    maxmemoryPolicy: noeviction  # Recommended for queues/persistence - prevents data loss
     ipAllowList: []  # Only allow internal connections from your Render services
 
 databases:
