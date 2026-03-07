@@ -29,7 +29,7 @@ gem "pundit", "~> 2.4"
 gem "acts_as_tenant", "~> 1.0"
 
 # Background jobs (required by PromptTracker)
-gem "sidekiq", "~> 7.3"
+gem "sidekiq", "~> 8.0"
 gem "redis", "~> 5.3"
 gem "connection_pool", "~> 2.4"  # Pin to 2.4.x for Sidekiq 7.3.9 compatibility
 
