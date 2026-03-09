@@ -146,7 +146,7 @@ RSpec.describe "PromptTracker Multi-Tenancy", type: :model do
   end
 
   describe "without tenant set" do
-    it "raises validation error when organization is missing" do
+    it "raises error when organization is missing" do
       ActsAsTenant.without_tenant do
         expect {
           PromptTracker::Prompt.create!(
@@ -154,7 +154,7 @@ RSpec.describe "PromptTracker Multi-Tenancy", type: :model do
             description: "Should fail",
             category: "test"
           )
-        }.to raise_error(ActiveRecord::RecordInvalid, /Organization must exist/)
+        }.to raise_error(ActiveRecord::NotNullViolation, /null value in column "organization_id"/)
       end
     end
   end

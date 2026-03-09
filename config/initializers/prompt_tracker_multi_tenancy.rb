@@ -60,4 +60,68 @@ Rails.application.config.to_prepare do
       Rails.logger.error "✗ Error configuring PromptTracker::#{model_file.camelize}: #{e.message}"
     end
   end
+
+  # Fix uniqueness validations to be tenant-scoped
+  # The PromptTracker gem uses standard validates :uniqueness which doesn't work
+  # properly with acts_as_tenant. We need to replace them with validates_uniqueness_to_tenant.
+  #
+  # Strategy: Use clear_validators! to remove all validations, then re-add them with tenant-scoped uniqueness.
+  begin
+    # PromptTracker::Prompt - fix slug and name uniqueness
+    PromptTracker::Prompt.class_eval do
+      # Clear ALL validators and callbacks
+      clear_validators!
+
+      # Re-add all the validations from the gem, but with tenant-scoped uniqueness
+      validates :name, presence: true
+      validates :slug, presence: true, format: { with: /\A[a-z0-9_]+\z/, message: "must contain only lowercase letters, numbers, and underscores" }
+
+      # Add tenant-scoped uniqueness validations (instead of global ones)
+      validates_uniqueness_to_tenant :slug, case_sensitive: false
+      validates_uniqueness_to_tenant :name
+    end
+    Rails.logger.info "✓ Fixed uniqueness validations for PromptTracker::Prompt"
+  rescue StandardError => e
+    Rails.logger.error "✗ Error fixing PromptTracker::Prompt validations: #{e.message}"
+  end
+
+  begin
+    # PromptTracker::Dataset - fix name uniqueness
+    PromptTracker::Dataset.class_eval do
+      # Clear ALL validators and callbacks
+      clear_validators!
+
+      # Re-add all validations with tenant-scoped uniqueness
+      validates :name, presence: true
+      validates :testable, presence: true
+      validates :schema, presence: true
+
+      validate :schema_must_be_array
+      validate :schema_matches_testable
+
+      # Add tenant-scoped uniqueness validation (instead of global)
+      validates_uniqueness_to_tenant :name, scope: [ :testable_type, :testable_id ]
+    end
+    Rails.logger.info "✓ Fixed uniqueness validations for PromptTracker::Dataset"
+  rescue StandardError => e
+    Rails.logger.error "✗ Error fixing PromptTracker::Dataset validations: #{e.message}"
+  end
+
+  begin
+    # PromptTracker::EvaluatorConfig - fix evaluator_type uniqueness
+    PromptTracker::EvaluatorConfig.class_eval do
+      # Clear ALL validators and callbacks
+      clear_validators!
+
+      # Re-add all validations with tenant-scoped uniqueness
+      validates :evaluator_type, presence: true
+      validate :evaluator_compatible_with_testable
+
+      # Add tenant-scoped uniqueness validation (instead of global)
+      validates_uniqueness_to_tenant :evaluator_type, scope: [ :configurable_type, :configurable_id ]
+    end
+    Rails.logger.info "✓ Fixed uniqueness validations for PromptTracker::EvaluatorConfig"
+  rescue StandardError => e
+    Rails.logger.error "✗ Error fixing PromptTracker::EvaluatorConfig validations: #{e.message}"
+  end
 end

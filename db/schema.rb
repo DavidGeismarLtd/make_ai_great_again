@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_01_122916) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -115,6 +115,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_122916) do
     t.datetime "updated_at", null: false
     t.index ["created_at"], name: "index_prompt_tracker_datasets_on_created_at"
     t.index ["dataset_type"], name: "index_prompt_tracker_datasets_on_dataset_type"
+    t.index ["organization_id", "name", "testable_type", "testable_id"], name: "index_datasets_on_org_name_testable", unique: true
     t.index ["organization_id"], name: "index_prompt_tracker_datasets_on_organization_id"
     t.index ["testable_type", "testable_id"], name: "index_prompt_tracker_datasets_on_testable_type_and_testable_id"
   end
@@ -161,6 +162,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_122916) do
     t.index ["configurable_type", "configurable_id"], name: "index_evaluator_configs_on_configurable"
     t.index ["depends_on"], name: "index_prompt_tracker_evaluator_configs_on_depends_on"
     t.index ["enabled"], name: "index_prompt_tracker_evaluator_configs_on_enabled"
+    t.index ["organization_id", "evaluator_type", "configurable_type", "configurable_id"], name: "index_evaluator_configs_unique", unique: true
     t.index ["organization_id"], name: "index_prompt_tracker_evaluator_configs_on_organization_id"
   end
 
@@ -311,10 +313,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_01_122916) do
     t.datetime "updated_at", null: false
     t.index ["archived_at"], name: "index_prompt_tracker_prompts_on_archived_at"
     t.index ["category"], name: "index_prompt_tracker_prompts_on_category"
-    t.index ["name"], name: "index_prompt_tracker_prompts_on_name", unique: true
+    t.index ["organization_id", "name"], name: "index_prompts_on_org_and_name", unique: true
+    t.index ["organization_id", "slug"], name: "index_prompts_on_org_and_slug", unique: true
     t.index ["organization_id"], name: "index_prompt_tracker_prompts_on_organization_id"
     t.index ["score_aggregation_strategy"], name: "index_prompts_on_aggregation_strategy"
-    t.index ["slug"], name: "index_prompt_tracker_prompts_on_slug", unique: true
   end
 
   create_table "prompt_tracker_spans", force: :cascade do |t|
