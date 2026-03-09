@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_09_114816) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -79,6 +79,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
     t.datetime "updated_at", null: false
     t.jsonb "variants", default: [], null: false
     t.index ["completed_at"], name: "index_prompt_tracker_ab_tests_on_completed_at"
+    t.index ["id"], name: "index_prompt_tracker_ab_tests_on_id", unique: true
     t.index ["metric_to_optimize"], name: "index_prompt_tracker_ab_tests_on_metric_to_optimize"
     t.index ["organization_id"], name: "index_prompt_tracker_ab_tests_on_organization_id"
     t.index ["prompt_id", "status"], name: "index_prompt_tracker_ab_tests_on_prompt_id_and_status"
@@ -97,6 +98,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
     t.datetime "updated_at", null: false
     t.index ["created_at"], name: "index_prompt_tracker_dataset_rows_on_created_at"
     t.index ["dataset_id"], name: "index_prompt_tracker_dataset_rows_on_dataset_id"
+    t.index ["id"], name: "index_prompt_tracker_dataset_rows_on_id", unique: true
     t.index ["organization_id"], name: "index_prompt_tracker_dataset_rows_on_organization_id"
     t.index ["source"], name: "index_prompt_tracker_dataset_rows_on_source"
   end
@@ -115,6 +117,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
     t.datetime "updated_at", null: false
     t.index ["created_at"], name: "index_prompt_tracker_datasets_on_created_at"
     t.index ["dataset_type"], name: "index_prompt_tracker_datasets_on_dataset_type"
+    t.index ["id"], name: "index_prompt_tracker_datasets_on_id", unique: true
     t.index ["organization_id", "name", "testable_type", "testable_id"], name: "index_datasets_on_org_name_testable", unique: true
     t.index ["organization_id"], name: "index_prompt_tracker_datasets_on_organization_id"
     t.index ["testable_type", "testable_id"], name: "index_prompt_tracker_datasets_on_testable_type_and_testable_id"
@@ -140,6 +143,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
     t.index ["evaluator_config_id"], name: "index_prompt_tracker_evaluations_on_evaluator_config_id"
     t.index ["evaluator_type", "created_at"], name: "index_evaluations_on_type_and_created_at"
     t.index ["evaluator_type"], name: "index_prompt_tracker_evaluations_on_evaluator_type"
+    t.index ["id"], name: "index_prompt_tracker_evaluations_on_id", unique: true
     t.index ["llm_response_id"], name: "index_prompt_tracker_evaluations_on_llm_response_id"
     t.index ["organization_id"], name: "index_prompt_tracker_evaluations_on_organization_id"
     t.index ["score"], name: "index_evaluations_on_score"
@@ -162,6 +166,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
     t.index ["configurable_type", "configurable_id"], name: "index_evaluator_configs_on_configurable"
     t.index ["depends_on"], name: "index_prompt_tracker_evaluator_configs_on_depends_on"
     t.index ["enabled"], name: "index_prompt_tracker_evaluator_configs_on_enabled"
+    t.index ["id"], name: "index_prompt_tracker_evaluator_configs_on_id", unique: true
     t.index ["organization_id", "evaluator_type", "configurable_type", "configurable_id"], name: "index_evaluator_configs_unique", unique: true
     t.index ["organization_id"], name: "index_prompt_tracker_evaluator_configs_on_organization_id"
   end
@@ -176,6 +181,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
     t.bigint "test_run_id"
     t.datetime "updated_at", null: false
     t.index ["evaluation_id"], name: "index_prompt_tracker_human_evaluations_on_evaluation_id"
+    t.index ["id"], name: "index_prompt_tracker_human_evaluations_on_id", unique: true
     t.index ["llm_response_id"], name: "index_prompt_tracker_human_evaluations_on_llm_response_id"
     t.index ["organization_id"], name: "index_prompt_tracker_human_evaluations_on_organization_id"
     t.index ["test_run_id"], name: "index_prompt_tracker_human_evaluations_on_test_run_id"
@@ -221,6 +227,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
     t.index ["conversation_id", "turn_number"], name: "index_llm_responses_on_conversation_turn"
     t.index ["conversation_id"], name: "index_prompt_tracker_llm_responses_on_conversation_id"
     t.index ["environment"], name: "index_prompt_tracker_llm_responses_on_environment"
+    t.index ["id"], name: "index_prompt_tracker_llm_responses_on_id", unique: true
     t.index ["model"], name: "index_prompt_tracker_llm_responses_on_model"
     t.index ["organization_id"], name: "index_prompt_tracker_llm_responses_on_organization_id"
     t.index ["previous_response_id"], name: "index_prompt_tracker_llm_responses_on_previous_response_id"
@@ -292,6 +299,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
     t.jsonb "variables_schema", default: []
     t.integer "version_number", null: false
     t.index ["archived_at"], name: "index_prompt_tracker_prompt_versions_on_archived_at"
+    t.index ["id"], name: "index_prompt_tracker_prompt_versions_on_id", unique: true
     t.index ["organization_id"], name: "index_prompt_tracker_prompt_versions_on_organization_id"
     t.index ["prompt_id", "status"], name: "index_prompt_versions_on_prompt_and_status"
     t.index ["prompt_id", "version_number"], name: "index_prompt_versions_on_prompt_and_version_number", unique: true
@@ -313,6 +321,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
     t.datetime "updated_at", null: false
     t.index ["archived_at"], name: "index_prompt_tracker_prompts_on_archived_at"
     t.index ["category"], name: "index_prompt_tracker_prompts_on_category"
+    t.index ["id"], name: "index_prompt_tracker_prompts_on_id", unique: true
     t.index ["organization_id", "name"], name: "index_prompts_on_org_and_name", unique: true
     t.index ["organization_id", "slug"], name: "index_prompts_on_org_and_slug", unique: true
     t.index ["organization_id"], name: "index_prompt_tracker_prompts_on_organization_id"
@@ -361,6 +370,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
     t.integer "total_evaluators", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["created_at"], name: "index_prompt_tracker_test_runs_on_created_at"
+    t.index ["id"], name: "index_prompt_tracker_test_runs_on_id", unique: true
     t.index ["organization_id"], name: "index_prompt_tracker_test_runs_on_organization_id"
     t.index ["output_data"], name: "index_prompt_tracker_test_runs_on_output_data", using: :gin
     t.index ["passed"], name: "index_prompt_tracker_test_runs_on_passed"
@@ -380,6 +390,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_095441) do
     t.string "testable_type"
     t.datetime "updated_at", null: false
     t.index ["enabled"], name: "index_prompt_tracker_tests_on_enabled"
+    t.index ["id"], name: "index_prompt_tracker_tests_on_id", unique: true
     t.index ["name"], name: "index_prompt_tracker_tests_on_name"
     t.index ["organization_id"], name: "index_prompt_tracker_tests_on_organization_id"
     t.index ["tags"], name: "index_prompt_tracker_tests_on_tags", using: :gin
