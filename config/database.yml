@@ -92,10 +92,3 @@ production:
     url: <%= ENV.fetch("DATABASE_URL", "postgresql://localhost/make_ai_great_again_production") %>
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 }.to_i %>
     migrations_paths: db/cache_migrate
-  cable:
-    <<: *default
-    # Use the same database as primary for Solid Cable (Render provides single DB)
-    # Solid Cable uses its own tables within the same database
-    url: <%= ENV.fetch("DATABASE_URL", "postgresql://localhost/make_ai_great_again_production") %>
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 }.to_i %>
-    migrations_paths: db/cable_migrate
