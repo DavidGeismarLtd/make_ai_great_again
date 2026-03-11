@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/DavidGeismarLtd/PromptTracker.git
-  revision: ecf40bf5f3ce576f01a129777d19408f82fd9280
+  revision: 9e8475e1ea1ab809edd5c5b8b1ced0679f76484f
   specs:
     prompt_tracker (0.1.0)
       groupdate (~> 6.0)
@@ -197,7 +197,7 @@ GEM
     jbuilder (2.14.1)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
-    json (2.19.0)
+    json (2.19.1)
     kamal (2.10.1)
       activesupport (>= 7.0)
       base64 (~> 0.2)
@@ -498,7 +498,7 @@ GEM
     thruster (0.1.18-arm64-darwin)
     thruster (0.1.18-x86_64-darwin)
     thruster (0.1.18-x86_64-linux)
-    timeout (0.6.0)
+    timeout (0.6.1)
     tsort (0.2.0)
     turbo-rails (2.0.23)
       actionpack (>= 7.1.0)
