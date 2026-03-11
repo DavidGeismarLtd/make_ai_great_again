@@ -1,7 +1,99 @@
-<p>Hello <%= @resource.email %>!</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    .header h1 {
+      margin: 0;
+      color: #2563eb;
+      font-size: 24px;
+    }
+    .content {
+      padding: 30px 0;
+    }
+    .greeting {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .button {
+      display: inline-block;
+      padding: 14px 28px;
+      background-color: #2563eb;
+      color: white !important;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      margin: 20px 0;
+    }
+    .button:hover {
+      background-color: #1d4ed8;
+    }
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e7eb;
+      font-size: 14px;
+      color: #6b7280;
+      text-align: center;
+    }
+    .warning {
+      background-color: #fee2e2;
+      border-left: 4px solid #ef4444;
+      padding: 12px 16px;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>PromptTracker</h1>
+  </div>
 
-<p>Your account has been locked due to an excessive number of unsuccessful sign in attempts.</p>
+  <div class="content">
+    <p class="greeting">Hi <%= @resource.first_name || 'there' %>! 👋</p>
 
-<p>Click the link below to unlock your account:</p>
+    <div class="warning">
+      <strong>🔒 Account Locked:</strong> Your PromptTracker account has been locked due to too many unsuccessful sign-in attempts.
+    </div>
 
-<p><%= link_to 'Unlock my account', unlock_url(@resource, unlock_token: @token) %></p>
+    <p>This is a security measure to protect your account from unauthorized access.</p>
+
+    <p>Click the button below to unlock your account:</p>
+
+    <div style="text-align: center;">
+      <%= link_to 'Unlock My Account', unlock_url(@resource, unlock_token: @token), class: 'button' %>
+    </div>
+
+    <p><strong>Security Recommendations:</strong></p>
+    <ul>
+      <li>Make sure you're using the correct password</li>
+      <li>If you've forgotten your password, use the "Forgot Password" link instead</li>
+      <li>If you didn't attempt to sign in, someone may be trying to access your account - consider changing your password</li>
+      <li>Contact our support team if you need assistance</li>
+    </ul>
+
+    <p>Best regards,<br>
+    The PromptTracker Team</p>
+  </div>
+
+  <div class="footer">
+    <p>This notification was sent to <%= @resource.email %></p>
+    <p>PromptTracker - AI Prompt Management & Testing Platform</p>
+  </div>
+</body>
+</html>

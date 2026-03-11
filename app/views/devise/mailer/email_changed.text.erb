@@ -1,0 +1,23 @@
+Hi <%= @resource.first_name || 'there' %>!
+
+This is a security notification to let you know that your email address <%= @resource.try(:unconfirmed_email?) ? 'is being changed' : 'has been successfully changed' %>.
+
+<% if @resource.try(:unconfirmed_email?) %>
+📧 New Email Address: <%= @resource.unconfirmed_email %>
+
+You'll need to confirm your new email address before the change takes effect. We've sent a confirmation link to your new email.
+<% else %>
+📧 New Email Address: <%= @resource.email %>
+
+This change is now active. You'll use this new email address to sign in to PromptTracker.
+<% end %>
+
+⚠️ DIDN'T MAKE THIS CHANGE? If you didn't request this email change, please contact our support team immediately to secure your account.
+
+Best regards,
+The PromptTracker Team
+
+---
+This notification was sent to <%= @email %>
+PromptTracker - AI Prompt Management & Testing Platform
+

@@ -1,0 +1,23 @@
+Hi <%= @resource.first_name || 'there' %>!
+
+🔒 ACCOUNT LOCKED: Your PromptTracker account has been locked due to too many unsuccessful sign-in attempts.
+
+This is a security measure to protect your account from unauthorized access.
+
+Click the link below to unlock your account:
+
+<%= unlock_url(@resource, unlock_token: @token) %>
+
+Security Recommendations:
+- Make sure you're using the correct password
+- If you've forgotten your password, use the "Forgot Password" link instead
+- If you didn't attempt to sign in, someone may be trying to access your account - consider changing your password
+- Contact our support team if you need assistance
+
+Best regards,
+The PromptTracker Team
+
+---
+This notification was sent to <%= @resource.email %>
+PromptTracker - AI Prompt Management & Testing Platform
+
