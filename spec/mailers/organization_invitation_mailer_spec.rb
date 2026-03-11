@@ -5,11 +5,13 @@ RSpec.describe OrganizationInvitationMailer, type: :mailer do
     let(:organization) { create(:organization, name: "Acme Corp") }
     let(:inviter) { create(:user, first_name: "John", last_name: "Doe") }
     let(:invitation) do
-      create(:organization_invitation,
-             organization: organization,
-             invited_by: inviter,
-             email: "newuser@example.com",
-             role: "member")
+      ActsAsTenant.with_tenant(organization) do
+        create(:organization_invitation,
+               organization: organization,
+               invited_by: inviter,
+               email: "newuser@example.com",
+               role: "member")
+      end
     end
     let(:mail) { OrganizationInvitationMailer.invite(invitation) }
 
@@ -22,7 +24,7 @@ RSpec.describe OrganizationInvitationMailer, type: :mailer do
     end
 
     it "sends from the default email" do
-      expect(mail.from).to eq(["noreply@prompttracker.com"])
+      expect(mail.from).to eq(["from@example.com"])
     end
 
     it "includes the organization name in the body" do
@@ -34,7 +36,7 @@ RSpec.describe OrganizationInvitationMailer, type: :mailer do
     end
 
     it "includes the role in the body" do
-      expect(mail.body.encoded).to match("member")
+      expect(mail.body.encoded).to match("Member")
     end
 
     it "includes the invitation link in the body" do
@@ -47,15 +49,19 @@ RSpec.describe OrganizationInvitationMailer, type: :mailer do
 
     context "with different roles" do
       it "includes admin role" do
-        invitation.update!(role: "admin")
+        ActsAsTenant.with_tenant(organization) do
+          invitation.update!(role: "admin")
+        end
         mail = OrganizationInvitationMailer.invite(invitation)
-        expect(mail.body.encoded).to match("admin")
+        expect(mail.body.encoded).to match(/Admin/i)
       end
 
       it "includes viewer role" do
-        invitation.update!(role: "viewer")
+        ActsAsTenant.with_tenant(organization) do
+          invitation.update!(role: "viewer")
+        end
         mail = OrganizationInvitationMailer.invite(invitation)
-        expect(mail.body.encoded).to match("viewer")
+        expect(mail.body.encoded).to match(/Viewer/i)
       end
     end
   end

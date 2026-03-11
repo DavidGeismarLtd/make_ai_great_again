@@ -22,7 +22,7 @@ module SetsLlmApiKeys
   included do
     # Run after set_current_tenant to ensure we have the current organization
     # Only run if we have a tenant set (avoid NoTenantSet errors on non-org pages)
-    before_action :set_llm_api_keys, if: :tenant_set?
+    before_action :set_llm_api_keys, if: -> { tenant_set? }
   end
 
   private
@@ -30,7 +30,7 @@ module SetsLlmApiKeys
   # Check if a tenant is set without raising an error
   def tenant_set?
     user_signed_in? && ActsAsTenant.current_tenant.present?
-  rescue ActsAsTenant::Errors::NoTenantSet
+  rescue ActsAsTenant::Errors::NoTenantSet, ArgumentError
     false
   end
 

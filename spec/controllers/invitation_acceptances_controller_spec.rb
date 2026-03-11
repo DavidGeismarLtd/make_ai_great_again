@@ -3,7 +3,11 @@ require 'rails_helper'
 RSpec.describe InvitationAcceptancesController, type: :controller do
   let(:organization) { create(:organization) }
   let(:inviter) { create(:user) }
-  let(:invitation) { create(:organization_invitation, organization: organization, invited_by: inviter) }
+  let(:invitation) do
+    ActsAsTenant.with_tenant(organization) do
+      create(:organization_invitation, organization: organization, invited_by: inviter)
+    end
+  end
 
   describe 'GET #show' do
     context 'with valid token' do
@@ -51,7 +55,11 @@ RSpec.describe InvitationAcceptancesController, type: :controller do
       end
 
       context 'when invitation is expired' do
-        let(:invitation) { create(:organization_invitation, :expired, organization: organization, invited_by: inviter) }
+        let(:invitation) do
+          ActsAsTenant.with_tenant(organization) do
+            create(:organization_invitation, :expired, organization: organization, invited_by: inviter)
+          end
+        end
 
         it 'renders the expired template' do
           get :show, params: { token: invitation.token }
@@ -60,7 +68,11 @@ RSpec.describe InvitationAcceptancesController, type: :controller do
       end
 
       context 'when invitation is already accepted' do
-        let(:invitation) { create(:organization_invitation, :accepted, organization: organization, invited_by: inviter) }
+        let(:invitation) do
+          ActsAsTenant.with_tenant(organization) do
+            create(:organization_invitation, :accepted, organization: organization, invited_by: inviter)
+          end
+        end
 
         it 'renders the already_accepted template' do
           get :show, params: { token: invitation.token }
@@ -90,14 +102,16 @@ RSpec.describe InvitationAcceptancesController, type: :controller do
       end
 
       it 'creates organization membership' do
-        expect {
-          post :accept, params: { token: invitation.token }
-        }.to change { OrganizationMembership.count }.by(1)
+        ActsAsTenant.with_tenant(organization) do
+          expect {
+            post :accept, params: { token: invitation.token }
+          }.to change { OrganizationMembership.count }.by(1)
+        end
       end
 
       it 'redirects to organization dashboard' do
         post :accept, params: { token: invitation.token }
-        expect(response).to redirect_to(org_prompt_tracker.root_path(org_slug: organization.slug))
+        expect(response).to redirect_to("/orgs/#{organization.slug}/app/")
       end
     end
 
@@ -111,7 +125,11 @@ RSpec.describe InvitationAcceptancesController, type: :controller do
     end
 
     context 'with expired invitation' do
-      let(:invitation) { create(:organization_invitation, :expired, organization: organization, invited_by: inviter) }
+      let(:invitation) do
+        ActsAsTenant.with_tenant(organization) do
+          create(:organization_invitation, :expired, organization: organization, invited_by: inviter)
+        end
+      end
 
       it 'does not accept the invitation' do
         post :accept, params: { token: invitation.token }
@@ -132,8 +150,10 @@ RSpec.describe InvitationAcceptancesController, type: :controller do
 
     context 'with valid params' do
       it 'creates a new user' do
+        # Force invitation to be created first (which creates the inviter)
+        invitation_token = invitation.token
         expect {
-          post :create_account, params: { token: invitation.token, user: user_params }
+          post :create_account, params: { token: invitation_token, user: user_params }
         }.to change { User.count }.by(1)
       end
 
@@ -151,4 +171,3 @@ RSpec.describe InvitationAcceptancesController, type: :controller do
     end
   end
 end
-

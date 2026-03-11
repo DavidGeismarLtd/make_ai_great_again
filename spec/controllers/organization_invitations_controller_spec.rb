@@ -3,11 +3,15 @@ require 'rails_helper'
 RSpec.describe OrganizationInvitationsController, type: :controller do
   let(:organization) { create(:organization) }
   let(:admin_user) { create(:user) }
-  let!(:admin_membership) { create(:organization_membership, organization: organization, user: admin_user, role: 'admin') }
+  let!(:admin_membership) do
+    ActsAsTenant.with_tenant(organization) do
+      create(:organization_membership, organization: organization, user: admin_user, role: 'admin')
+    end
+  end
 
   before do
-    sign_in admin_user
     ActsAsTenant.current_tenant = organization
+    sign_in admin_user, scope: :user
   end
 
   describe 'GET #index' do
@@ -70,7 +74,7 @@ RSpec.describe OrganizationInvitationsController, type: :controller do
 
       it 'redirects to invitations index' do
         post :create, params: valid_params
-        expect(response).to redirect_to(org_invitations_path(org_slug: organization.slug))
+        expect(response).to redirect_to(org_organization_invitations_path(org_slug: organization.slug))
       end
 
       it 'sets the invited_by to current user' do
@@ -115,7 +119,7 @@ RSpec.describe OrganizationInvitationsController, type: :controller do
 
     it 'redirects to invitations index' do
       post :resend, params: { org_slug: organization.slug, id: invitation.id }
-      expect(response).to redirect_to(org_invitations_path(org_slug: organization.slug))
+      expect(response).to redirect_to(org_organization_invitations_path(org_slug: organization.slug))
     end
   end
 
@@ -130,13 +134,17 @@ RSpec.describe OrganizationInvitationsController, type: :controller do
 
     it 'redirects to invitations index' do
       delete :destroy, params: { org_slug: organization.slug, id: invitation.id }
-      expect(response).to redirect_to(org_invitations_path(org_slug: organization.slug))
+      expect(response).to redirect_to(org_organization_invitations_path(org_slug: organization.slug))
     end
   end
 
   context 'authorization' do
     let(:member_user) { create(:user) }
-    let!(:member_membership) { create(:organization_membership, organization: organization, user: member_user, role: 'member') }
+    let!(:member_membership) do
+      ActsAsTenant.with_tenant(organization) do
+        create(:organization_membership, organization: organization, user: member_user, role: 'member')
+      end
+    end
 
     before do
       sign_out admin_user
@@ -149,4 +157,3 @@ RSpec.describe OrganizationInvitationsController, type: :controller do
     end
   end
 end
-
