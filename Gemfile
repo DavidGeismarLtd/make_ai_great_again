@@ -102,3 +102,5 @@ group :test do
   gem "simplecov", require: false
   gem "rails-controller-testing"
 end
+
+gem "resend", "~> 1.0"
