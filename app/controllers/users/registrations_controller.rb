@@ -44,10 +44,15 @@ class Users::RegistrationsController < Devise::RegistrationsController
       # Redirect to testing dashboard
       redirect_to after_sign_up_path_for(resource)
     else
-      # Registration failed - show errors
+      # Registration failed - add service errors to the user model
+      result.errors.each do |error|
+        resource.errors.add(:base, error)
+      end
+
+      # Show errors
       clean_up_passwords resource
       set_minimum_password_length
-      respond_with resource
+      render :new, status: :unprocessable_entity
     end
   end
 

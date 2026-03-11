@@ -16,6 +16,16 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "home#index"
 
+  # Static pages
+  get "privacy", to: "pages#privacy", as: :privacy
+  get "terms", to: "pages#terms", as: :terms
+  get "guides", to: "pages#guides", as: :guides
+
+  # Invitation acceptance (public, no org scope)
+  get "invitations/:token", to: "invitation_acceptances#show", as: :invitation
+  post "invitations/:token/accept", to: "invitation_acceptances#accept", as: :accept_invitation
+  post "invitations/:token/create_account", to: "invitation_acceptances#create_account", as: :create_account_invitation
+
   # Organization-scoped routes
   # All PromptTracker routes are scoped under /orgs/:org_slug/app
   # This ensures complete data isolation and clear URL structure
@@ -34,6 +44,13 @@ Rails.application.routes.draw do
         patch :update_contexts
         get :features
         patch :update_features
+      end
+    end
+
+    # Organization Invitations
+    resources :organization_invitations, only: [ :index, :new, :create, :destroy ], path: "invitations" do
+      member do
+        post :resend
       end
     end
 

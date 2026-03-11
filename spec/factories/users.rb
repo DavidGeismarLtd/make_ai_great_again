@@ -6,9 +6,14 @@ FactoryBot.define do
     first_name { "John" }
     last_name { "Doe" }
     role { "user" }
+    confirmed_at { Time.current }
 
     trait :admin do
       role { "admin" }
+    end
+
+    trait :unconfirmed do
+      confirmed_at { nil }
     end
   end
 end

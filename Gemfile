@@ -22,6 +22,9 @@ gem "jbuilder"
 # Authentication
 gem "devise", "~> 4.9"
 
+# Email preview in development
+gem "letter_opener", group: :development
+
 # Authorization
 gem "pundit", "~> 2.4"
 

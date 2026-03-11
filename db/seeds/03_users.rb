@@ -11,7 +11,8 @@ admin_user = User.create!(
   password_confirmation: "password123",
   first_name: "Admin",
   last_name: "User",
-  role: "admin"
+  role: "admin",
+  confirmed_at: Time.current
 )
 
 demo_user = User.create!(
@@ -20,7 +21,8 @@ demo_user = User.create!(
   password_confirmation: "password123",
   first_name: "Demo",
   last_name: "User",
-  role: "user"
+  role: "user",
+  confirmed_at: Time.current
 )
 
 puts "  ✓ Created #{User.count} users"
@@ -30,4 +32,3 @@ SeedData.users = {
   admin: admin_user,
   demo: demo_user
 }
-

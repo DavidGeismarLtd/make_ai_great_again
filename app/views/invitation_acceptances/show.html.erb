@@ -1,0 +1,66 @@
+<% content_for :page_title, "Accept Invitation" %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card shadow">
+        <div class="card-body p-5 text-center">
+          <div class="mb-4">
+            <i class="bi bi-envelope-check text-primary" style="font-size: 4rem;"></i>
+          </div>
+          
+          <h2 class="mb-3">You're Invited!</h2>
+          
+          <p class="lead mb-4">
+            <strong><%= @invited_by.full_name %></strong> has invited you to join
+            <strong><%= @organization.name %></strong> on PromptTracker.
+          </p>
+
+          <div class="alert alert-info text-start">
+            <h6 class="alert-heading">Invitation Details</h6>
+            <ul class="mb-0">
+              <li><strong>Organization:</strong> <%= @organization.name %></li>
+              <li><strong>Your Role:</strong> <%= @invitation.role.titleize %></li>
+              <li><strong>Invited By:</strong> <%= @invited_by.full_name %> (<%= @invited_by.email %>)</li>
+              <li><strong>Expires:</strong> <%= @invitation.expires_at.strftime("%B %d, %Y at %I:%M %p") %></li>
+            </ul>
+          </div>
+
+          <% if user_signed_in? %>
+            <% if current_user.email.downcase == @invitation.email.downcase %>
+              <%= form_with url: accept_invitation_path(@invitation.token), method: :post, local: true do %>
+                <%= button_tag type: "submit", class: "btn btn-primary btn-lg w-100 mb-3" do %>
+                  <i class="bi bi-check-circle me-2"></i>
+                  Accept Invitation
+                <% end %>
+              <% end %>
+              
+              <p class="text-muted small">
+                By accepting, you'll become a <%= @invitation.role.titleize %> of <%= @organization.name %>
+              </p>
+            <% else %>
+              <div class="alert alert-warning">
+                <p class="mb-2">
+                  <strong>Email Mismatch</strong>
+                </p>
+                <p class="mb-0 small">
+                  This invitation was sent to <strong><%= @invitation.email %></strong>, 
+                  but you're signed in as <strong><%= current_user.email %></strong>.
+                </p>
+              </div>
+              
+              <%= link_to "Sign Out and Try Again", destroy_user_session_path, 
+                          method: :delete, 
+                          class: "btn btn-outline-secondary" %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4">
+        <%= link_to "Back to Home", root_path, class: "text-muted" %>
+      </div>
+    </div>
+  </div>
+</div>
+

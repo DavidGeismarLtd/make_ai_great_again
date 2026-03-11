@@ -1,0 +1,36 @@
+<% content_for :page_title, "Invitation Not Found" %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card shadow">
+        <div class="card-body p-5 text-center">
+          <div class="mb-4">
+            <i class="bi bi-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
+          </div>
+          
+          <h2 class="mb-3">Invitation Not Found</h2>
+          
+          <p class="lead mb-4">
+            We couldn't find the invitation you're looking for.
+          </p>
+
+          <div class="alert alert-danger">
+            <p class="mb-0">
+              The invitation link may be invalid or has been removed.
+            </p>
+          </div>
+
+          <p class="text-muted">
+            Please check the link in your email or contact the person who invited you.
+          </p>
+
+          <div class="mt-4">
+            <%= link_to "Back to Home", root_path, class: "btn btn-outline-primary" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

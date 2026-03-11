@@ -390,18 +390,16 @@
         <div class="col-md-4">
           <h6 class="footer-heading">Resources</h6>
           <ul class="footer-links">
-            <li><a href="#" class="footer-link">Documentation</a></li>
-            <li><a href="#" class="footer-link">API Reference</a></li>
-            <li><a href="#" class="footer-link">Guides</a></li>
-            <li><a href="#" class="footer-link">Blog</a></li>
+            <li><%= link_to "Documentation", guides_path, class: "footer-link" %></li>
+            <li><%= link_to "Guides", guides_path, class: "footer-link" %></li>
           </ul>
         </div>
         <div class="col-md-4">
           <h6 class="footer-heading">Company</h6>
           <ul class="footer-links">
             <li><a href="#" class="footer-link">About</a></li>
-            <li><a href="#" class="footer-link">Terms of Service</a></li>
-            <li><a href="#" class="footer-link">Privacy Policy</a></li>
+            <li><%= link_to "Terms of Service", terms_path, class: "footer-link" %></li>
+            <li><%= link_to "Privacy Policy", privacy_path, class: "footer-link" %></li>
             <li><a href="#" class="footer-link">Contact</a></li>
           </ul>
         </div>

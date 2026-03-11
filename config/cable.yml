@@ -10,5 +10,5 @@ test:
 
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") %>
+  url: <%= ENV.fetch("REDIS_URL", "redis://localhost:6379/0") %>
   channel_prefix: make_ai_great_again_production

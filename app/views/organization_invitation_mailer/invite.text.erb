@@ -1,0 +1,17 @@
+You've been invited to join <%= @organization.name %>
+
+Hi there,
+
+<%= @invited_by.full_name %> (<%= @invited_by.email %>) has invited you to join <%= @organization.name %> on PromptTracker.
+
+You've been invited as a <%= @invitation.role.titleize %>.
+
+To accept this invitation, visit:
+<%= @accept_url %>
+
+This invitation will expire on <%= @invitation.expires_at.strftime("%B %d, %Y at %I:%M %p") %>.
+
+If you didn't expect this invitation, you can safely ignore this email.
+
+---
+PromptTracker - Build, Test, and Monitor AI Agents at Scale

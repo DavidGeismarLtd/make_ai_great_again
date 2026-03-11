@@ -1,0 +1,40 @@
+<% content_for :page_title, "Invitation Already Accepted" %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card shadow">
+        <div class="card-body p-5 text-center">
+          <div class="mb-4">
+            <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
+          </div>
+          
+          <h2 class="mb-3">Already Accepted</h2>
+          
+          <p class="lead mb-4">
+            This invitation to join <strong><%= @invitation.organization.name %></strong> has already been accepted.
+          </p>
+
+          <div class="alert alert-success">
+            <p class="mb-0">
+              This invitation was accepted on <%= @invitation.accepted_at.strftime("%B %d, %Y at %I:%M %p") %>.
+            </p>
+          </div>
+
+          <% if user_signed_in? %>
+            <div class="mt-4">
+              <%= link_to "Go to #{@invitation.organization.name}", 
+                          org_prompt_tracker.root_path(org_slug: @invitation.organization.slug),
+                          class: "btn btn-primary" %>
+            </div>
+          <% else %>
+            <div class="mt-4">
+              <%= link_to "Sign In", new_user_session_path, class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

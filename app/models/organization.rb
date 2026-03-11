@@ -2,6 +2,7 @@ class Organization < ApplicationRecord
   # Associations
   has_many :organization_memberships, dependent: :destroy
   has_many :users, through: :organization_memberships
+  has_many :organization_invitations, dependent: :destroy
   has_many :api_configurations, dependent: :destroy
   has_one :organization_configuration, dependent: :destroy
 
@@ -24,6 +25,16 @@ class Organization < ApplicationRecord
   def generate_slug
     return if slug.present?
 
-    self.slug = name.parameterize
+    base_slug = name.parameterize
+    candidate_slug = base_slug
+    counter = 1
+
+    # Keep trying until we find a unique slug
+    while Organization.exists?(slug: candidate_slug)
+      candidate_slug = "#{base_slug}-#{counter}"
+      counter += 1
+    end
+
+    self.slug = candidate_slug
   end
 end

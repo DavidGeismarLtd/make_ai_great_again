@@ -1,0 +1,93 @@
+<% content_for :page_title, "Send Invitation" %>
+
+<% content_for :breadcrumbs do %>
+  <%= render "shared/breadcrumbs", breadcrumbs: [
+    { name: current_organization.name, url: main_app.org_prompt_tracker_path(current_organization.slug) },
+    { name: "Settings", url: main_app.org_organization_settings_path(current_organization.slug) },
+    { name: "Invitations", url: main_app.org_organization_invitations_path(current_organization.slug) },
+    { name: "New", url: nil }
+  ] %>
+<% end %>
+
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="bi bi-envelope-plus me-2"></i>
+            Invite Team Member
+          </h4>
+        </div>
+        <div class="card-body">
+          <%= form_with model: @invitation, 
+                        url: org_organization_invitations_path(current_organization.slug),
+                        local: true do |f| %>
+            
+            <% if @invitation.errors.any? %>
+              <div class="alert alert-danger">
+                <h5 class="alert-heading">
+                  <%= pluralize(@invitation.errors.count, "error") %> prevented this invitation from being sent:
+                </h5>
+                <ul class="mb-0">
+                  <% @invitation.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+
+            <div class="mb-3">
+              <%= f.label :email, "Email Address", class: "form-label" %>
+              <%= f.email_field :email, 
+                                class: "form-control", 
+                                placeholder: "colleague@example.com",
+                                required: true,
+                                autofocus: true %>
+              <div class="form-text">
+                Enter the email address of the person you want to invite
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <%= f.label :role, "Role", class: "form-label" %>
+              <%= f.select :role, 
+                          [
+                            ["Viewer - Can view prompts and analytics", "viewer"],
+                            ["Member - Can create and edit prompts", "member"],
+                            ["Admin - Can manage team and settings", "admin"]
+                          ],
+                          {},
+                          class: "form-select",
+                          required: true %>
+              <div class="form-text">
+                Select the role for this team member
+              </div>
+            </div>
+
+            <div class="alert alert-info">
+              <h6 class="alert-heading">
+                <i class="bi bi-info-circle me-2"></i>
+                What happens next?
+              </h6>
+              <ul class="mb-0 small">
+                <li>An invitation email will be sent to the provided address</li>
+                <li>The invitation will be valid for 7 days</li>
+                <li>The recipient can accept the invitation by clicking the link in the email</li>
+                <li>If they don't have an account, they'll be prompted to create one</li>
+              </ul>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <%= link_to "Cancel", 
+                          org_organization_invitations_path(current_organization.slug),
+                          class: "btn btn-outline-secondary" %>
+              <%= f.submit "Send Invitation", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
