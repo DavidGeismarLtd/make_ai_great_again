@@ -18,21 +18,22 @@
     </div>
   </div>
 
-  <%= form_with url: update_features_org_organization_settings_path(current_organization.slug), 
-                method: :patch, 
+  <%= form_with url: update_features_org_organization_settings_path(current_organization.slug),
+                method: :patch,
                 local: true do |f| %>
-    
+
     <div class="row">
       <div class="col-lg-8">
         <div class="card">
           <div class="card-body">
             <% feature_descriptions = {
-              openai_assistant_sync: "Show 'Sync OpenAI Assistants' button in Testing Dashboard. Allows syncing prompts with OpenAI Assistants API."
+              openai_assistant_sync: "Show 'Sync OpenAI Assistants' button in Testing Dashboard. Allows syncing prompts with OpenAI Assistants API.",
+              monitoring: "Enable the Monitoring section for tracking production LLM calls and performance metrics."
             } %>
 
             <% OrganizationConfiguration::DEFAULT_FEATURES.each do |feature_name, default_value| %>
               <% current_value = @organization_configuration.features_config.fetch(feature_name.to_s, default_value) %>
-              
+
               <div class="mb-4 pb-4 border-bottom">
                 <div class="d-flex align-items-start">
                   <div class="flex-grow-1">
@@ -45,13 +46,15 @@
                   </div>
                   <div class="flex-shrink-0 ms-3">
                     <div class="form-check form-switch">
+                      <%# Hidden field ensures the parameter is always present, even when unchecked %>
+                      <%= hidden_field_tag "features_config[#{feature_name}]", "false" %>
                       <%= check_box_tag "features_config[#{feature_name}]",
                                         "true",
                                         current_value,
                                         class: "form-check-input",
                                         style: "width: 3rem; height: 1.5rem; cursor: pointer;",
                                         id: "feature_#{feature_name}" %>
-                      <%= label_tag "feature_#{feature_name}", 
+                      <%= label_tag "feature_#{feature_name}",
                                     current_value ? "Enabled" : "Disabled",
                                     class: "form-check-label ms-2" %>
                     </div>
@@ -88,4 +91,3 @@
     </div>
   <% end %>
 </div>
-

@@ -52,7 +52,8 @@ class OrganizationConfiguration < ApplicationRecord
 
   # Default features configuration
   DEFAULT_FEATURES = {
-    openai_assistant_sync: true
+    openai_assistant_sync: true,
+    monitoring: false  # Monitoring section is disabled by default
   }.freeze
 
   private

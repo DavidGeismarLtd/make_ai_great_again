@@ -44,7 +44,10 @@ class OrganizationSettingsController < ApplicationController
   end
 
   def update_features
-    if @organization_configuration.update(features_config: features_params)
+    # Convert string "true"/"false" to boolean values
+    features = features_params.transform_values { |v| v == "true" }
+
+    if @organization_configuration.update(features_config: features)
       redirect_to features_org_organization_settings_path(current_organization.slug),
                   notice: "Feature settings updated successfully."
     else

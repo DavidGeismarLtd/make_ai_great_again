@@ -33,12 +33,14 @@
             <% end %>
           </li>
 
-          <%# Monitoring Section %>
-          <li class="nav-item">
-            <%= link_to org_prompt_tracker.monitoring_root_path(org_slug: current_organization.slug), class: "nav-link pt-nav-monitoring #{'active' if current_section == 'monitoring'}" do %>
-              <i class="bi bi-activity"></i> Monitoring
-            <% end %>
-          </li>
+          <%# Monitoring Section - Only show if enabled in features %>
+          <%# if PromptTracker.config.features[:monitoring] %>
+            <li class="nav-item">
+              <%= link_to org_prompt_tracker.monitoring_root_path(org_slug: current_organization.slug), class: "nav-link pt-nav-monitoring #{'active' if current_section == 'monitoring'}" do %>
+                <i class="bi bi-activity"></i> Monitoring
+              <% end %>
+            </li>
+          <%#end %>
 
           <%# Organizations - Future %>
           <%# <li class="nav-item"> %>
