@@ -20,7 +20,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 
 # Authentication
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 
 # Email preview in development
 gem "letter_opener", group: :development
