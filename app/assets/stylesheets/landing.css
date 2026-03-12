@@ -760,3 +760,122 @@
     min-height: auto;
   }
 }
+
+/* ========================================
+   Open Source Section
+   ======================================== */
+.opensource-section {
+  padding: 6rem 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.opensource-visual {
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.code-preview {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ========================================
+   Services Section
+   ======================================== */
+.services-section {
+  padding: 6rem 0;
+  background: #ffffff;
+}
+
+.service-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  height: 100%;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.service-icon {
+  transition: transform 0.3s ease;
+}
+
+.service-card:hover .service-icon {
+  transform: scale(1.1);
+}
+
+/* ========================================
+   Contact Section
+   ======================================== */
+.contact-section {
+  padding: 6rem 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.contact-section .section-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.contact-section .section-title {
+  color: #ffffff;
+}
+
+.contact-section .section-subtitle {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.contact-form-wrapper {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.contact-form-wrapper .form-label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.contact-form-wrapper .form-control {
+  border: 2px solid #e9ecef;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.contact-form-wrapper .form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+.contact-form-wrapper .btn-primary {
+  background-color: #667eea;
+  border-color: #667eea;
+  padding: 0.875rem 2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.contact-form-wrapper .btn-primary:hover {
+  background-color: #5568d3;
+  border-color: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+}
+
+.success-icon {
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

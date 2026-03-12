@@ -21,6 +21,9 @@ Rails.application.routes.draw do
   get "terms", to: "pages#terms", as: :terms
   get "guides", to: "pages#guides", as: :guides
 
+  # Contact form
+  post "contact", to: "contacts#create", as: :contact
+
   # Invitation acceptance (public, no org scope)
   get "invitations/:token", to: "invitation_acceptances#show", as: :invitation
   post "invitations/:token/accept", to: "invitation_acceptances#accept", as: :accept_invitation

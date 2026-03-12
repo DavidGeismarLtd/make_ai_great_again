@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/DavidGeismarLtd/PromptTracker.git
-  revision: ece54311431c59df55502a812ed4d27c3d948458
+  revision: 0f414de02670b01a34e9d6225ca2d59a33412df9
   specs:
     prompt_tracker (0.1.0)
       groupdate (~> 6.0)
@@ -14,7 +14,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    action_text-trix (2.1.16)
+    action_text-trix (2.1.17)
       railties
     actioncable (8.1.2)
       actionpack (= 8.1.2)
