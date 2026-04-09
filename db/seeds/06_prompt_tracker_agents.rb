@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
 # ============================================================================
-# PROMPTTRACKER - PROMPTS & VERSIONS
+# PROMPTTRACKER - AGENTS & VERSIONS
 # ============================================================================
-puts "\n🤖 Creating PromptTracker prompts and versions..."
+puts "\n🤖 Creating PromptTracker agents and versions..."
 
 acme_corp = SeedData.organizations[:acme_corp]
 
 # Set tenant context for PromptTracker data creation
 ActsAsTenant.with_tenant(acme_corp) do
   # ============================================================================
-  # 1. Customer Support Greeting Prompt
+  # 1. Customer Support Greeting Agent
   # ============================================================================
-  puts "  Creating customer support prompts..."
+  puts "  Creating customer support agents..."
 
-  support_greeting = PromptTracker::Prompt.create!(
+  support_greeting = PromptTracker::Agent.create!(
     organization_id: acme_corp.id,
     name: "customer_support_greeting",
     description: "Initial greeting for customer support interactions",
@@ -24,9 +24,11 @@ ActsAsTenant.with_tenant(acme_corp) do
   )
 
   # Version 1 - Original (deprecated)
-  support_greeting_v1 = support_greeting.prompt_versions.create!(
+  support_greeting_v1 = support_greeting.agent_versions.create!(
     organization_id: acme_corp.id,
+    system_prompt: "You are a friendly customer support agent. Greet the customer and help them with their issue.",
     user_prompt: "Hello {{customer_name}}! Thank you for contacting support. How can I help you with {{issue_category}} today?",
+    version_number: 1,
     status: "deprecated",
     variables_schema: [
       { "name" => "customer_name", "type" => "string", "required" => true },
@@ -44,9 +46,11 @@ ActsAsTenant.with_tenant(acme_corp) do
   )
 
   # Version 2 - More casual (deprecated)
-  support_greeting_v2 = support_greeting.prompt_versions.create!(
+  support_greeting_v2 = support_greeting.agent_versions.create!(
     organization_id: acme_corp.id,
+    system_prompt: "You are a casual, friendly customer support agent. Use a warm, approachable tone.",
     user_prompt: "Hi {{customer_name}}! 👋 Thanks for reaching out. What can I help you with today?",
+    version_number: 2,
     status: "deprecated",
     variables_schema: [
       { "name" => "customer_name", "type" => "string", "required" => true }
@@ -63,9 +67,11 @@ ActsAsTenant.with_tenant(acme_corp) do
   )
 
   # Version 3 - Current active version
-  support_greeting_v3 = support_greeting.prompt_versions.create!(
+  support_greeting_v3 = support_greeting.agent_versions.create!(
     organization_id: acme_corp.id,
+    system_prompt: "You are a professional yet friendly customer support agent. Be helpful and empathetic while staying efficient.",
     user_prompt: "Hi {{customer_name}}! Thanks for contacting us. I'm here to help with your {{issue_category}} question. What's going on?",
+    version_number: 3,
     status: "active",
     variables_schema: [
       { "name" => "customer_name", "type" => "string", "required" => true },
@@ -83,9 +89,11 @@ ActsAsTenant.with_tenant(acme_corp) do
   )
 
   # Version 4 - Draft: Testing casual tone
-  support_greeting_v4 = support_greeting.prompt_versions.create!(
+  support_greeting_v4 = support_greeting.agent_versions.create!(
     organization_id: acme_corp.id,
+    system_prompt: "You are a very casual customer support agent. Use informal language and be super approachable.",
     user_prompt: "Hey {{customer_name}}! What's up with {{issue_category}}?",
+    version_number: 4,
     status: "draft",
     variables_schema: [
       { "name" => "customer_name", "type" => "string", "required" => true },
@@ -103,9 +111,11 @@ ActsAsTenant.with_tenant(acme_corp) do
   )
 
   # Version 5 - Draft: Using Anthropic Claude
-  support_greeting_v5 = support_greeting.prompt_versions.create!(
+  support_greeting_v5 = support_greeting.agent_versions.create!(
     organization_id: acme_corp.id,
+    system_prompt: "You are an empathetic customer support agent. Listen carefully, acknowledge the customer's feelings, and provide thoughtful assistance.",
     user_prompt: "Hi {{customer_name}}, I understand you're having an issue with {{issue_category}}. I'm here to help you resolve this. Can you tell me more about what's happening?",
+    version_number: 5,
     status: "draft",
     variables_schema: [
       { "name" => "customer_name", "type" => "string", "required" => true },
@@ -122,14 +132,14 @@ ActsAsTenant.with_tenant(acme_corp) do
     created_by: "alice@example.com"
   )
 
-  puts "  ✓ Created customer support prompts (1 prompt, 5 versions)"
+  puts "  ✓ Created customer support agents (1 agent, 5 versions)"
 
   # ============================================================================
-  # 2. Email Summary Generator Prompt
+  # 2. Email Summary Generator Agent
   # ============================================================================
-  puts "  Creating email generation prompts..."
+  puts "  Creating email generation agents..."
 
-  email_summary = PromptTracker::Prompt.create!(
+  email_summary = PromptTracker::Agent.create!(
     organization_id: acme_corp.id,
     name: "email_summary_generator",
     description: "Generates concise summaries of long email threads",
@@ -139,10 +149,11 @@ ActsAsTenant.with_tenant(acme_corp) do
   )
 
   # Version 1 - Paragraph format (active)
-  email_summary_v1 = email_summary.prompt_versions.create!(
+  email_summary_v1 = email_summary.agent_versions.create!(
     organization_id: acme_corp.id,
     system_prompt: "You are an email summarization assistant. Your role is to read email threads and provide concise, accurate summaries.",
     user_prompt: "Summarize the following email thread in 2-3 sentences:\n\n{{email_thread}}",
+    version_number: 1,
     status: "active",
     variables_schema: [
       { "name" => "email_thread", "type" => "string", "required" => true }
@@ -159,10 +170,11 @@ ActsAsTenant.with_tenant(acme_corp) do
   )
 
   # Version 2 - Bullet points format (draft)
-  email_summary_v2 = email_summary.prompt_versions.create!(
+  email_summary_v2 = email_summary.agent_versions.create!(
     organization_id: acme_corp.id,
     system_prompt: "You are an email summarization assistant. Provide summaries in bullet point format for easy scanning.",
     user_prompt: "Summarize the following email thread as bullet points:\n\n{{email_thread}}",
+    version_number: 2,
     status: "draft",
     variables_schema: [
       { "name" => "email_thread", "type" => "string", "required" => true }
@@ -178,14 +190,14 @@ ActsAsTenant.with_tenant(acme_corp) do
     created_by: "bob@example.com"
   )
 
-  puts "  ✓ Created email summary prompts (1 prompt, 2 versions)"
+  puts "  ✓ Created email summary agents (1 agent, 2 versions)"
 
   # ============================================================================
-  # 3. Code Review Assistant Prompt
+  # 3. Code Review Assistant Agent
   # ============================================================================
-  puts "  Creating code review prompts..."
+  puts "  Creating code review agents..."
 
-  code_review = PromptTracker::Prompt.create!(
+  code_review = PromptTracker::Agent.create!(
     organization_id: acme_corp.id,
     name: "code_review_assistant",
     description: "Reviews code for quality, bugs, and best practices",
@@ -195,7 +207,7 @@ ActsAsTenant.with_tenant(acme_corp) do
   )
 
   # Version 1 - Active
-  code_review_v1 = code_review.prompt_versions.create!(
+  code_review_v1 = code_review.agent_versions.create!(
     organization_id: acme_corp.id,
     system_prompt: <<~SYSTEM.strip,
       You are a code review assistant. Your role is to:
@@ -207,6 +219,7 @@ ActsAsTenant.with_tenant(acme_corp) do
       Focus on being helpful and educational, not critical.
     SYSTEM
     user_prompt: "Review the following {{language}} code:\n\n```{{language}}\n{{code}}\n```",
+    version_number: 1,
     status: "active",
     variables_schema: [
       { "name" => "language", "type" => "string", "required" => true },
@@ -223,7 +236,7 @@ ActsAsTenant.with_tenant(acme_corp) do
     created_by: "tech-lead@example.com"
   )
 
-  puts "  ✓ Created code review prompts (1 prompt, 1 version)"
+  puts "  ✓ Created code review agents (1 agent, 1 version)"
 
   # Store for use in other seed files
   SeedData.prompt_versions = {
@@ -237,5 +250,5 @@ ActsAsTenant.with_tenant(acme_corp) do
     code_review_v1: code_review_v1
   }
 
-  puts "\n  ✅ Total: #{PromptTracker::Prompt.count} prompts with #{PromptTracker::PromptVersion.count} versions"
+  puts "\n  ✅ Total: #{PromptTracker::Agent.count} agents with #{PromptTracker::AgentVersion.count} versions"
 end

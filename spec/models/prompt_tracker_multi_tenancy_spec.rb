@@ -7,12 +7,12 @@ RSpec.describe "PromptTracker Multi-Tenancy", type: :model do
   let(:organization2) { create(:organization, name: "Org 2", slug: "org-2") }
 
   describe "acts_as_tenant configuration" do
-    it "adds organization association to PromptTracker::Prompt" do
-      expect(PromptTracker::Prompt.reflect_on_association(:organization)).to be_present
+    it "adds organization association to PromptTracker::Agent" do
+      expect(PromptTracker::Agent.reflect_on_association(:organization)).to be_present
     end
 
-    it "adds organization association to PromptTracker::PromptVersion" do
-      expect(PromptTracker::PromptVersion.reflect_on_association(:organization)).to be_present
+    it "adds organization association to PromptTracker::AgentVersion" do
+      expect(PromptTracker::AgentVersion.reflect_on_association(:organization)).to be_present
     end
 
     it "adds organization association to PromptTracker::Test" do
@@ -29,9 +29,9 @@ RSpec.describe "PromptTracker Multi-Tenancy", type: :model do
   end
 
   describe "data isolation" do
-    let!(:prompt1) do
+    let!(:agent1) do
       ActsAsTenant.with_tenant(organization1) do
-        PromptTracker::Prompt.create!(
+        PromptTracker::Agent.create!(
           name: "org1_prompt",
           description: "Prompt for org 1",
           category: "test"
@@ -39,9 +39,9 @@ RSpec.describe "PromptTracker Multi-Tenancy", type: :model do
       end
     end
 
-    let!(:prompt2) do
+    let!(:agent2) do
       ActsAsTenant.with_tenant(organization2) do
-        PromptTracker::Prompt.create!(
+        PromptTracker::Agent.create!(
           name: "org2_prompt",
           description: "Prompt for org 2",
           category: "test"
@@ -51,38 +51,38 @@ RSpec.describe "PromptTracker Multi-Tenancy", type: :model do
 
     it "isolates prompts by organization" do
       ActsAsTenant.with_tenant(organization1) do
-        expect(PromptTracker::Prompt.count).to eq(1)
-        expect(PromptTracker::Prompt.first.name).to eq("org1_prompt")
+        expect(PromptTracker::Agent.count).to eq(1)
+        expect(PromptTracker::Agent.first.name).to eq("org1_prompt")
       end
 
       ActsAsTenant.with_tenant(organization2) do
-        expect(PromptTracker::Prompt.count).to eq(1)
-        expect(PromptTracker::Prompt.first.name).to eq("org2_prompt")
+        expect(PromptTracker::Agent.count).to eq(1)
+        expect(PromptTracker::Agent.first.name).to eq("org2_prompt")
       end
     end
 
     it "automatically sets organization_id when creating records" do
       ActsAsTenant.with_tenant(organization1) do
-        prompt = PromptTracker::Prompt.create!(
+        agent = PromptTracker::Agent.create!(
           name: "auto_org_prompt",
           description: "Test auto organization",
           category: "test"
         )
-        expect(prompt.organization_id).to eq(organization1.id)
+        expect(agent.organization_id).to eq(organization1.id)
       end
     end
 
     it "prevents accessing records from other organizations" do
       ActsAsTenant.with_tenant(organization1) do
-        expect(PromptTracker::Prompt.where(id: prompt2.id).count).to eq(0)
+        expect(PromptTracker::Agent.where(id: agent2.id).count).to eq(0)
       end
     end
   end
 
   describe "nested associations" do
-    let!(:prompt1) do
+    let!(:agent1) do
       ActsAsTenant.with_tenant(organization1) do
-        PromptTracker::Prompt.create!(
+        PromptTracker::Agent.create!(
           name: "test_prompt_org1",
           description: "Test prompt for org 1",
           category: "test"
@@ -90,9 +90,9 @@ RSpec.describe "PromptTracker Multi-Tenancy", type: :model do
       end
     end
 
-    let!(:prompt2) do
+    let!(:agent2) do
       ActsAsTenant.with_tenant(organization2) do
-        PromptTracker::Prompt.create!(
+        PromptTracker::Agent.create!(
           name: "test_prompt_org2",
           description: "Test prompt for org 2",
           category: "test"
@@ -102,9 +102,10 @@ RSpec.describe "PromptTracker Multi-Tenancy", type: :model do
 
     let!(:version1) do
       ActsAsTenant.with_tenant(organization1) do
-        PromptTracker::PromptVersion.create!(
-          prompt: prompt1,
+        PromptTracker::AgentVersion.create!(
+          agent: agent1,
           user_prompt: "Version 1 for org 1",
+          version_number: 1,
           status: "active",
           model_config: { provider: "openai", model: "gpt-4" }
         )
@@ -113,9 +114,10 @@ RSpec.describe "PromptTracker Multi-Tenancy", type: :model do
 
     let!(:version2) do
       ActsAsTenant.with_tenant(organization2) do
-        PromptTracker::PromptVersion.create!(
-          prompt: prompt2,
+        PromptTracker::AgentVersion.create!(
+          agent: agent2,
           user_prompt: "Version 1 for org 2",
+          version_number: 1,
           status: "active",
           model_config: { provider: "openai", model: "gpt-4" }
         )
@@ -124,13 +126,13 @@ RSpec.describe "PromptTracker Multi-Tenancy", type: :model do
 
     it "isolates prompt versions by organization" do
       ActsAsTenant.with_tenant(organization1) do
-        expect(PromptTracker::PromptVersion.count).to eq(1)
-        expect(PromptTracker::PromptVersion.first.user_prompt).to eq("Version 1 for org 1")
+        expect(PromptTracker::AgentVersion.count).to eq(1)
+        expect(PromptTracker::AgentVersion.first.user_prompt).to eq("Version 1 for org 1")
       end
 
       ActsAsTenant.with_tenant(organization2) do
-        expect(PromptTracker::PromptVersion.count).to eq(1)
-        expect(PromptTracker::PromptVersion.first.user_prompt).to eq("Version 1 for org 2")
+        expect(PromptTracker::AgentVersion.count).to eq(1)
+        expect(PromptTracker::AgentVersion.first.user_prompt).to eq("Version 1 for org 2")
       end
     end
 
@@ -149,7 +151,7 @@ RSpec.describe "PromptTracker Multi-Tenancy", type: :model do
     it "raises error when organization is missing" do
       ActsAsTenant.without_tenant do
         expect {
-          PromptTracker::Prompt.create!(
+          PromptTracker::Agent.create!(
             name: "no_tenant_prompt",
             description: "Should fail",
             category: "test"

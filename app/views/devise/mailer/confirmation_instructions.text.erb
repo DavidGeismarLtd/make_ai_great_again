@@ -1,12 +1,12 @@
 Hi <%= @resource.first_name || 'there' %>!
 
-Welcome to PromptTracker! We're excited to have you on board.
+Welcome to AgentsOnRails! We're excited to have you on board.
 
 To get started, please confirm your email address by clicking the link below:
 
 <%= confirmation_url(@resource, confirmation_token: @token) %>
 
-Note: This confirmation link will expire in 3 days. If you didn't create an account with PromptTracker, you can safely ignore this email.
+Note: This confirmation link will expire in 3 days. If you didn't create an account with AgentsOnRails, you can safely ignore this email.
 
 Once confirmed, you'll be able to:
 - Create and manage your prompts
@@ -17,9 +17,8 @@ Once confirmed, you'll be able to:
 If you have any questions, feel free to reach out to our support team.
 
 Best regards,
-The PromptTracker Team
+The AgentsOnRails Team
 
 ---
 This email was sent to <%= @email %>
-PromptTracker - AI Prompt Management & Testing Platform
-
+AgentsOnRails - AI Agent Development Platform

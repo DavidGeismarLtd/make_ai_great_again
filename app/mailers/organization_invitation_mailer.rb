@@ -8,7 +8,7 @@ class OrganizationInvitationMailer < ApplicationMailer
 
     mail(
       to: invitation.email,
-      subject: "You've been invited to join #{@organization.name} on PromptTracker"
+      subject: "You've been invited to join #{@organization.name} on AgentsOnRails"
     )
   end
 end

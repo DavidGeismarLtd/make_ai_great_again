@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-puts "🌱 Seeding MakeAiGreatAgain database..."
+puts "🌱 Seeding AgentsOnRails database..."
 
 # Temporarily disable tenant requirement for seeding
 original_require_tenant = ActsAsTenant.configuration.require_tenant
@@ -18,7 +18,7 @@ begin
     '03_users',
     '04_organization_memberships',
     '05_api_configurations',
-    '06_prompt_tracker_prompts',
+    '06_prompt_tracker_agents',
     '07_prompt_tracker_tests',
     '08_prompt_tracker_datasets'
   ]
@@ -41,8 +41,8 @@ begin
   puts "  • API Configurations: #{ApiConfiguration.count}"
   puts ""
   puts "🤖 PromptTracker Data:"
-  puts "  • Prompts: #{PromptTracker::Prompt.count}"
-  puts "  • Prompt Versions: #{PromptTracker::PromptVersion.count}"
+  puts "  • Agents: #{PromptTracker::Agent.count}"
+  puts "  • Agent Versions: #{PromptTracker::AgentVersion.count}"
   puts "  • Tests: #{PromptTracker::Test.count}"
   puts "  • Evaluator Configs: #{PromptTracker::EvaluatorConfig.count}"
   puts "  • Datasets: #{PromptTracker::Dataset.count}"

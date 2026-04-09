@@ -7,11 +7,11 @@ class AddUniqueIndexesToPromptTrackerPrimaryKeys < ActiveRecord::Migration[8.1]
     # doesn't always recognize it as an index.
 
     # Only add if the index doesn't already exist
-    add_index :prompt_tracker_prompts, :id, unique: true, if_not_exists: true
+    add_index :prompt_tracker_agents, :id, unique: true, if_not_exists: true
     add_index :prompt_tracker_datasets, :id, unique: true, if_not_exists: true
     add_index :prompt_tracker_evaluator_configs, :id, unique: true, if_not_exists: true
     add_index :prompt_tracker_dataset_rows, :id, unique: true, if_not_exists: true
-    add_index :prompt_tracker_prompt_versions, :id, unique: true, if_not_exists: true
+    add_index :prompt_tracker_agent_versions, :id, unique: true, if_not_exists: true
     add_index :prompt_tracker_tests, :id, unique: true, if_not_exists: true
     add_index :prompt_tracker_test_runs, :id, unique: true, if_not_exists: true
     add_index :prompt_tracker_evaluations, :id, unique: true, if_not_exists: true

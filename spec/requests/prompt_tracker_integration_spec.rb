@@ -63,9 +63,9 @@ RSpec.describe "PromptTracker Integration", type: :request do
       end
     end
 
-    let!(:prompt1) do
+    let!(:agent1) do
       ActsAsTenant.with_tenant(organization) do
-        PromptTracker::Prompt.create!(
+        PromptTracker::Agent.create!(
           name: "org1_prompt",
           description: "Prompt for org 1",
           category: "test"
@@ -73,9 +73,9 @@ RSpec.describe "PromptTracker Integration", type: :request do
       end
     end
 
-    let!(:prompt2) do
+    let!(:agent2) do
       ActsAsTenant.with_tenant(organization2) do
-        PromptTracker::Prompt.create!(
+        PromptTracker::Agent.create!(
           name: "org2_prompt",
           description: "Prompt for org 2",
           category: "test"
@@ -94,8 +94,8 @@ RSpec.describe "PromptTracker Integration", type: :request do
 
       # Verify tenant is set to org1
       ActsAsTenant.with_tenant(organization) do
-        expect(PromptTracker::Prompt.count).to eq(1)
-        expect(PromptTracker::Prompt.first.name).to eq("org1_prompt")
+        expect(PromptTracker::Agent.count).to eq(1)
+        expect(PromptTracker::Agent.first.name).to eq("org1_prompt")
       end
 
       # Access org2's PromptTracker
@@ -104,8 +104,8 @@ RSpec.describe "PromptTracker Integration", type: :request do
 
       # Verify tenant is set to org2
       ActsAsTenant.with_tenant(organization2) do
-        expect(PromptTracker::Prompt.count).to eq(1)
-        expect(PromptTracker::Prompt.first.name).to eq("org2_prompt")
+        expect(PromptTracker::Agent.count).to eq(1)
+        expect(PromptTracker::Agent.first.name).to eq("org2_prompt")
       end
     end
   end

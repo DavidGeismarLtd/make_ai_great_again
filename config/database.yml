@@ -21,13 +21,13 @@ default: &default
 
 development:
   <<: *default
-  database: make_ai_great_again_development
+  database: agents_on_rails_development
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
   # When left blank, PostgreSQL will use the default role. This is
   # the same name as the operating system user running Rails.
-  #username: make_ai_great_again
+  #username: agents_on_rails
 
   # The password associated with the PostgreSQL role (username).
   #password:
@@ -55,7 +55,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: make_ai_great_again_test
+  database: agents_on_rails_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -81,7 +81,7 @@ production:
   primary:
     <<: *default
     # Render.com provides DATABASE_URL automatically
-    url: <%= ENV.fetch("DATABASE_URL", "postgresql://localhost/make_ai_great_again_production") %>
+    url: <%= ENV.fetch("DATABASE_URL", "postgresql://localhost/agents_on_rails_production") %>
     # Set pool size based on threads * workers for optimal performance
     # RAILS_MAX_THREADS (default 3) * WEB_CONCURRENCY (default 2) = 6 connections minimum
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 }.to_i * ENV.fetch("WEB_CONCURRENCY") { 2 }.to_i %>
@@ -89,6 +89,6 @@ production:
     <<: *default
     # Use the same database as primary for Solid Cache (Render provides single DB)
     # Solid Cache uses its own tables within the same database
-    url: <%= ENV.fetch("DATABASE_URL", "postgresql://localhost/make_ai_great_again_production") %>
+    url: <%= ENV.fetch("DATABASE_URL", "postgresql://localhost/agents_on_rails_production") %>
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 }.to_i %>
     migrations_paths: db/cache_migrate

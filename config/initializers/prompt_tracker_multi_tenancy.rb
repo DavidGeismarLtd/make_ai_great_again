@@ -19,17 +19,28 @@ Rails.application.config.to_prepare do
   # Note: All these models have organization_id added via migration
   # (see db/migrate/20260225100645_add_organization_id_to_prompt_tracker_tables.rb)
   models_to_configure = %w[
-    prompt
-    prompt_version
+    agent
+    agent_version
     test
     test_run
+    prompt_test_suite
+    prompt_test_suite_run
     dataset
     dataset_row
     evaluation
     evaluator_config
     human_evaluation
     llm_response
+    trace
+    span
     ab_test
+    function_definition
+    environment_variable
+    deployed_agent
+    agent_conversation
+    task_run
+    task_schedule
+    function_execution
   ]
 
   models_to_configure.each do |model_file|
@@ -67,8 +78,8 @@ Rails.application.config.to_prepare do
   #
   # Strategy: Use clear_validators! to remove all validations, then re-add them with tenant-scoped uniqueness.
   begin
-    # PromptTracker::Prompt - fix slug and name uniqueness
-    PromptTracker::Prompt.class_eval do
+    # PromptTracker::Agent - fix slug and name uniqueness
+    PromptTracker::Agent.class_eval do
       # Clear ALL validators and callbacks
       clear_validators!
 
@@ -80,9 +91,9 @@ Rails.application.config.to_prepare do
       validates_uniqueness_to_tenant :slug, case_sensitive: false
       validates_uniqueness_to_tenant :name
     end
-    Rails.logger.info "✓ Fixed uniqueness validations for PromptTracker::Prompt"
+    Rails.logger.info "✓ Fixed uniqueness validations for PromptTracker::Agent"
   rescue StandardError => e
-    Rails.logger.error "✗ Error fixing PromptTracker::Prompt validations: #{e.message}"
+    Rails.logger.error "✗ Error fixing PromptTracker::Agent validations: #{e.message}"
   end
 
   begin

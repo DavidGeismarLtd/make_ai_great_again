@@ -1,19 +1,19 @@
 <%# Unified Navigation Bar %>
-<%# Works across host app and PromptTracker engine %>
+<%# Works across host app and AgentsOnRails engine %>
 <%# Includes: Logo, Testing, Monitoring, Search, Theme Toggle, Org Switcher, User Menu %>
 
 <nav class="navbar navbar-expand-lg navbar-dark pt-navbar">
   <div class="container-fluid">
-    <%# Logo - PromptTracker branding %>
+    <%# Logo - AgentsOnRails branding %>
     <% if user_signed_in? && current_organization %>
       <%= link_to org_prompt_tracker.root_path(org_slug: current_organization.slug), class: "navbar-brand pt-brand" do %>
         <span class="pt-logo-cursor">&gt;</span>
-        <span class="pt-logo-prompt">Prompt</span><span class="pt-logo-tracker">Tracker</span>
+        <span class="pt-logo-prompt">Agents</span><span class="pt-logo-tracker">OnRails</span>
       <% end %>
     <% else %>
       <%= link_to root_path, class: "navbar-brand pt-brand" do %>
         <span class="pt-logo-cursor">&gt;</span>
-        <span class="pt-logo-prompt">Prompt</span><span class="pt-logo-tracker">Tracker</span>
+        <span class="pt-logo-prompt">Agents</span><span class="pt-logo-tracker">OnRails</span>
       <% end %>
     <% end %>
 

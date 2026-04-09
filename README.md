@@ -1,10 +1,10 @@
-# MakeAiGreatAgain - PromptTracker Platform
+# AgentsOnRails - AI Agent Development Platform
 
 A multi-tenant SaaS platform providing enterprise-grade prompt management and LLM tracking capabilities through the [PromptTracker](https://github.com/DavidGeismarLtd/PromptTracker) engine.
 
 ## 🎯 What is This?
 
-MakeAiGreatAgain is the **host application** that wraps the PromptTracker engine, providing:
+AgentsOnRails is the **host application** that wraps the PromptTracker engine, providing:
 
 - 🔐 **Authentication & User Management** - Secure user accounts with Devise
 - 👥 **Multi-Tenancy** - Organizations/teams with role-based access control

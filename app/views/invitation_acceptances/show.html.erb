@@ -8,12 +8,12 @@
           <div class="mb-4">
             <i class="bi bi-envelope-check text-primary" style="font-size: 4rem;"></i>
           </div>
-          
+
           <h2 class="mb-3">You're Invited!</h2>
-          
+
           <p class="lead mb-4">
             <strong><%= @invited_by.full_name %></strong> has invited you to join
-            <strong><%= @organization.name %></strong> on PromptTracker.
+            <strong><%= @organization.name %></strong> on AgentsOnRails.
           </p>
 
           <div class="alert alert-info text-start">
@@ -34,7 +34,7 @@
                   Accept Invitation
                 <% end %>
               <% end %>
-              
+
               <p class="text-muted small">
                 By accepting, you'll become a <%= @invitation.role.titleize %> of <%= @organization.name %>
               </p>
@@ -44,23 +44,22 @@
                   <strong>Email Mismatch</strong>
                 </p>
                 <p class="mb-0 small">
-                  This invitation was sent to <strong><%= @invitation.email %></strong>, 
+                  This invitation was sent to <strong><%= @invitation.email %></strong>,
                   but you're signed in as <strong><%= current_user.email %></strong>.
                 </p>
               </div>
-              
-              <%= link_to "Sign Out and Try Again", destroy_user_session_path, 
-                          method: :delete, 
+
+              <%= link_to "Sign Out and Try Again", destroy_user_session_path,
+                          method: :delete,
                           class: "btn btn-outline-secondary" %>
             <% end %>
           <% end %>
         </div>
       </div>
-      
+
       <div class="text-center mt-4">
         <%= link_to "Back to Home", root_path, class: "text-muted" %>
       </div>
     </div>
   </div>
 </div>
-

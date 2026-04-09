@@ -8,22 +8,22 @@ class AddMissingUniqueIndexesToPromptTracker < ActiveRecord::Migration[8.1]
     # This requires unique indexes that include organization_id.
 
     # ============================================================================
-    # 1. prompt_tracker_prompts - slug and name uniqueness
+    # 1. prompt_tracker_agents - slug and name uniqueness
     # ============================================================================
     # Remove old unique indexes
-    remove_index :prompt_tracker_prompts, name: "index_prompt_tracker_prompts_on_slug"
-    remove_index :prompt_tracker_prompts, name: "index_prompt_tracker_prompts_on_name"
+    remove_index :prompt_tracker_agents, name: "index_prompt_tracker_agents_on_slug"
+    remove_index :prompt_tracker_agents, name: "index_prompt_tracker_agents_on_name"
 
     # Add new unique indexes scoped to organization_id
-    add_index :prompt_tracker_prompts,
+    add_index :prompt_tracker_agents,
               [ :organization_id, :slug ],
               unique: true,
-              name: "index_prompts_on_org_and_slug"
+              name: "index_agents_on_org_and_slug"
 
-    add_index :prompt_tracker_prompts,
+    add_index :prompt_tracker_agents,
               [ :organization_id, :name ],
               unique: true,
-              name: "index_prompts_on_org_and_name"
+              name: "index_agents_on_org_and_name"
 
     # ============================================================================
     # 2. prompt_tracker_evaluator_configs - evaluator_type uniqueness

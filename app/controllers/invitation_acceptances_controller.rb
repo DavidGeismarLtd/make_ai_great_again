@@ -11,7 +11,7 @@ class InvitationAcceptancesController < ApplicationController
     @invitation = OrganizationInvitation.find_by!(token: params[:token])
     @organization = @invitation.organization
     @invited_by = @invitation.invited_by
-
+    
     if @invitation.expired?
       render :expired
     elsif @invitation.accepted?

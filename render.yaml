@@ -6,19 +6,19 @@ projects:
   - name: Production
     services:
     - type: worker
-      name: make_ai_great_again_sidekiq_worker
+      name: agents_on_rails_sidekiq_worker
       runtime: ruby
-      repo: https://github.com/DavidGeismarLtd/make_ai_great_again
+      repo: https://github.com/DavidGeismarLtd/agents_on_rails
       plan: starter
       envVars:
       - key: REDIS_URL
         fromService:
-          name: make-ai-great-again-redis
+          name: agents-on-rails-redis
           type: keyvalue
           property: connectionString
       - key: DATABASE_URL
         fromDatabase:
-          name: make-ai-great-again-db
+          name: agents-on-rails-db
           property: connectionString
       - key: RAILS_MASTER_KEY
         sync: false
@@ -29,19 +29,19 @@ projects:
       startCommand: bundle exec sidekiq
       autoDeployTrigger: commit
     - type: web
-      name: make_ai_great_again_web_service
+      name: agents_on_rails_web_service
       runtime: ruby
-      repo: https://github.com/DavidGeismarLtd/make_ai_great_again
+      repo: https://github.com/DavidGeismarLtd/agents_on_rails
       plan: starter
       envVars:
       - key: REDIS_URL
         fromService:
-          name: make-ai-great-again-redis
+          name: agents-on-rails-redis
           type: keyvalue
           property: connectionString
       - key: DATABASE_URL
         fromDatabase:
-          name: make-ai-great-again-db
+          name: agents-on-rails-db
           property: connectionString
       - key: RAILS_MASTER_KEY
         sync: false
@@ -53,15 +53,15 @@ projects:
       startCommand: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
       autoDeployTrigger: commit
     - type: keyvalue
-      name: make-ai-great-again-redis
+      name: agents-on-rails-redis
       plan: free
       region: frankfurt
       maxmemoryPolicy: allkeys-lru
       ipAllowList: []
     databases:
-    - name: make-ai-great-again-db
-      databaseName: make_ai_great_again_db
-      user: make_ai_great_again_db_user
+    - name: agents-on-rails-db
+      databaseName: agents_on_rails_db
+      user: agents_on_rails_db_user
       plan: basic-256mb
       region: frankfurt
       ipAllowList:

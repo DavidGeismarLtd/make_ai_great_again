@@ -74,7 +74,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: make_ai_great_again_test
+          POSTGRES_DB: agents_on_rails_test
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -96,7 +96,7 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/make_ai_great_again_test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/agents_on_rails_test
           REDIS_URL: redis://localhost:6379/0
         run: bin/rails db:test:prepare spec
 
@@ -109,7 +109,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: make_ai_great_again_test
+          POSTGRES_DB: agents_on_rails_test
         ports:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
@@ -131,7 +131,7 @@ jobs:
       - name: Run System Tests
         env:
           RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/make_ai_great_again_test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/agents_on_rails_test
           REDIS_URL: redis://localhost:6379/0
         run: bin/rails db:test:prepare spec:system
 
