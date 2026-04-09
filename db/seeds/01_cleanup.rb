@@ -31,6 +31,7 @@ delete_if_table_exists.call(:prompt_tracker_spans)
 delete_if_table_exists.call(:prompt_tracker_traces)
 
 # Clean up host app data (order matters due to foreign key constraints)
+MonitoringApiKey.delete_all
 ApiConfiguration.delete_all
 OrganizationMembership.delete_all
 OrganizationConfiguration.delete_all

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_09_053001) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_09_123325) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_053001) do
     t.datetime "updated_at", null: false
     t.index ["organization_id", "provider", "key_name"], name: "index_api_configs_on_org_provider_name", unique: true
     t.index ["organization_id"], name: "index_api_configurations_on_organization_id"
+  end
+
+  create_table "monitoring_api_keys", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "created_by"
+    t.datetime "last_used_at"
+    t.string "name", null: false
+    t.bigint "organization_id", null: false
+    t.datetime "revoked_at"
+    t.string "status", default: "active", null: false
+    t.string "token_digest", null: false
+    t.string "token_prefix", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_monitoring_api_keys_on_organization_id"
+    t.index ["status"], name: "index_monitoring_api_keys_on_status"
+    t.index ["token_digest"], name: "index_monitoring_api_keys_on_token_digest", unique: true
   end
 
   create_table "organization_configurations", force: :cascade do |t|
@@ -402,7 +418,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_053001) do
     t.bigint "ab_test_id"
     t.string "ab_variant"
     t.bigint "agent_conversation_id"
-    t.bigint "agent_version_id", null: false
+    t.bigint "agent_version_id"
     t.jsonb "context", default: {}
     t.string "conversation_id"
     t.decimal "cost_usd", precision: 10, scale: 6
@@ -411,11 +427,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_053001) do
     t.string "environment"
     t.text "error_message"
     t.string "error_type"
+    t.string "external_id"
     t.string "model", null: false
     t.bigint "organization_id", null: false
     t.string "previous_response_id"
     t.string "provider", null: false
-    t.text "rendered_prompt", null: false
+    t.text "rendered_prompt"
     t.text "rendered_system_prompt"
     t.string "response_id"
     t.jsonb "response_metadata", default: {}
@@ -446,6 +463,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_053001) do
     t.index ["environment"], name: "index_prompt_tracker_llm_responses_on_environment"
     t.index ["id"], name: "index_prompt_tracker_llm_responses_on_id", unique: true
     t.index ["model"], name: "index_prompt_tracker_llm_responses_on_model"
+    t.index ["organization_id", "external_id"], name: "index_llm_responses_on_org_and_external_id", unique: true, where: "(external_id IS NOT NULL)"
     t.index ["organization_id"], name: "index_prompt_tracker_llm_responses_on_organization_id"
     t.index ["previous_response_id"], name: "index_prompt_tracker_llm_responses_on_previous_response_id"
     t.index ["provider", "model", "created_at"], name: "index_llm_responses_on_provider_model_created_at"
@@ -504,7 +522,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_053001) do
     t.datetime "created_at", null: false
     t.integer "duration_ms"
     t.datetime "ended_at"
+    t.string "external_id"
     t.text "input"
+    t.bigint "llm_response_id"
     t.jsonb "metadata", default: {}
     t.string "name", null: false
     t.bigint "organization_id", null: false
@@ -515,6 +535,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_053001) do
     t.string "status", default: "running", null: false
     t.bigint "trace_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["llm_response_id"], name: "index_prompt_tracker_spans_on_llm_response_id"
+    t.index ["organization_id", "external_id"], name: "index_spans_on_org_and_external_id", unique: true, where: "(external_id IS NOT NULL)"
     t.index ["organization_id"], name: "index_prompt_tracker_spans_on_organization_id"
     t.index ["parent_span_id"], name: "index_prompt_tracker_spans_on_parent_span_id"
     t.index ["span_type"], name: "index_prompt_tracker_spans_on_span_type"
@@ -623,6 +645,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_053001) do
     t.datetime "created_at", null: false
     t.integer "duration_ms"
     t.datetime "ended_at"
+    t.string "external_id"
     t.text "input"
     t.jsonb "metadata", default: {}
     t.string "name", null: false
@@ -633,6 +656,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_053001) do
     t.string "status", default: "running", null: false
     t.datetime "updated_at", null: false
     t.string "user_id"
+    t.index ["organization_id", "external_id"], name: "index_traces_on_org_and_external_id", unique: true, where: "(external_id IS NOT NULL)"
     t.index ["organization_id"], name: "index_prompt_tracker_traces_on_organization_id"
     t.index ["session_id"], name: "index_prompt_tracker_traces_on_session_id"
     t.index ["started_at"], name: "index_prompt_tracker_traces_on_started_at"
@@ -670,6 +694,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_053001) do
   end
 
   add_foreign_key "api_configurations", "organizations"
+  add_foreign_key "monitoring_api_keys", "organizations"
   add_foreign_key "organization_configurations", "organizations"
   add_foreign_key "organization_invitations", "organizations"
   add_foreign_key "organization_invitations", "users", column: "invited_by_id"

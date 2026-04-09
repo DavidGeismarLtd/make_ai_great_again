@@ -135,4 +135,35 @@ Rails.application.config.to_prepare do
   rescue StandardError => e
     Rails.logger.error "✗ Error fixing PromptTracker::EvaluatorConfig validations: #{e.message}"
   end
+
+  # PromptTracker::LlmResponse - make agent_version_id and rendered_prompt optional
+  # The gem requires both, but the Monitoring API allows external SDK calls without an agent.
+  begin
+    PromptTracker::LlmResponse.class_eval do
+      # Re-declare agent_version as optional (gem declares it as required belongs_to)
+      belongs_to :agent_version,
+                 class_name: "PromptTracker::AgentVersion",
+                 inverse_of: :llm_responses,
+                 optional: true
+
+      # Remove presence validators for :rendered_prompt and :agent_version
+      # The original belongs_to adds a presence validator for agent_version,
+      # and the gem adds validates :rendered_prompt, presence: true
+      %i[rendered_prompt agent_version].each do |attr|
+        _validators[attr]&.reject! { |v| v.is_a?(ActiveModel::Validations::PresenceValidator) }
+      end
+
+      # Remove the actual validate callbacks for these attributes
+      _validate_callbacks.each do |callback|
+        filter = callback.filter
+        next unless filter.is_a?(ActiveModel::Validations::PresenceValidator)
+        next unless (filter.attributes & [ :rendered_prompt, :agent_version ]).any?
+
+        _validate_callbacks.delete(callback)
+      end
+    end
+    Rails.logger.info "✓ Made agent_version and rendered_prompt optional on PromptTracker::LlmResponse"
+  rescue StandardError => e
+    Rails.logger.error "✗ Error configuring PromptTracker::LlmResponse: #{e.message}"
+  end
 end

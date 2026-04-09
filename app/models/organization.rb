@@ -5,6 +5,7 @@ class Organization < ApplicationRecord
   has_many :organization_invitations, dependent: :destroy
   has_many :api_configurations, dependent: :destroy
   has_one :organization_configuration, dependent: :destroy
+  has_many :monitoring_api_keys, dependent: :destroy
 
   # Validations
   validates :name, presence: true

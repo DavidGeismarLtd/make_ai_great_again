@@ -20,7 +20,8 @@ begin
     '05_api_configurations',
     '06_prompt_tracker_agents',
     '07_prompt_tracker_tests',
-    '08_prompt_tracker_datasets'
+    '08_prompt_tracker_datasets',
+    '09_monitoring_api_keys'
   ]
 
   seed_files.each do |seed_file|
@@ -39,6 +40,7 @@ begin
   puts "  • Organizations: #{Organization.count}"
   puts "  • Organization Memberships: #{OrganizationMembership.count}"
   puts "  • API Configurations: #{ApiConfiguration.count}"
+  puts "  • Monitoring API Keys: #{MonitoringApiKey.count}"
   puts ""
   puts "🤖 PromptTracker Data:"
   puts "  • Agents: #{PromptTracker::Agent.count}"

@@ -29,6 +29,20 @@ Rails.application.routes.draw do
   post "invitations/:token/accept", to: "invitation_acceptances#accept", as: :accept_invitation
   post "invitations/:token/create_account", to: "invitation_acceptances#create_account", as: :create_account_invitation
 
+  # ============================================================================
+  # API Routes (token-authenticated, no session/CSRF)
+  # ============================================================================
+  namespace :api do
+    namespace :v1 do
+      namespace :monitoring do
+        resources :traces, only: [ :create ]
+        resources :spans, only: [ :create ]
+        resources :llm_responses, only: [ :create ]
+        post :ingest, to: "ingest#create"
+      end
+    end
+  end
+
   # Organization-scoped routes
   # All PromptTracker routes are scoped under /orgs/:org_slug/app
   # This ensures complete data isolation and clear URL structure
