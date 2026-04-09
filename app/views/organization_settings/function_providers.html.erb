@@ -1,0 +1,114 @@
+<% content_for :page_title, "Function Providers" %>
+
+<% content_for :breadcrumbs do %>
+  <%= render "shared/breadcrumbs", breadcrumbs: [
+    { name: current_organization.name, url: main_app.org_prompt_tracker_path(current_organization.slug) },
+    { name: "Settings", url: main_app.org_organization_settings_path(current_organization.slug) },
+    { name: "Function Providers", url: nil }
+  ] %>
+<% end %>
+
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="h2 mb-2">Function Providers</h1>
+      <p class="text-muted">
+        Configure function execution providers for <%= current_organization.name %>
+      </p>
+    </div>
+  </div>
+
+  <%= form_with url: update_function_providers_org_organization_settings_path(current_organization.slug),
+                method: :patch,
+                local: true do |f| %>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <% current_config = @organization_configuration.function_providers_config.dig("aws_lambda") ||
+                                OrganizationConfiguration::DEFAULT_FUNCTION_PROVIDERS[:aws_lambda].stringify_keys %>
+
+            <h5 class="mb-3">
+              <i class="bi bi-cloud-fill text-warning me-2"></i>
+              AWS Lambda
+            </h5>
+            <p class="text-muted small mb-3">
+              Configure AWS Lambda for executing agent functions in the cloud.
+            </p>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <%= label_tag "function_providers_config[aws_lambda][region]", "AWS Region", class: "form-label" %>
+                <%= text_field_tag "function_providers_config[aws_lambda][region]",
+                                   current_config["region"],
+                                   class: "form-control",
+                                   placeholder: "us-east-1" %>
+              </div>
+
+              <div class="col-md-6">
+                <%= label_tag "function_providers_config[aws_lambda][function_prefix]", "Function Prefix", class: "form-label" %>
+                <%= text_field_tag "function_providers_config[aws_lambda][function_prefix]",
+                                   current_config["function_prefix"],
+                                   class: "form-control",
+                                   placeholder: "prompt-tracker" %>
+              </div>
+
+              <div class="col-md-6">
+                <%= label_tag "function_providers_config[aws_lambda][access_key_id]", "Access Key ID", class: "form-label" %>
+                <%= text_field_tag "function_providers_config[aws_lambda][access_key_id]",
+                                   current_config["access_key_id"],
+                                   class: "form-control",
+                                   placeholder: "AKIA..." %>
+              </div>
+
+              <div class="col-md-6">
+                <%= label_tag "function_providers_config[aws_lambda][secret_access_key]", "Secret Access Key", class: "form-label" %>
+                <%= password_field_tag "function_providers_config[aws_lambda][secret_access_key]",
+                                       current_config["secret_access_key"],
+                                       class: "form-control",
+                                       placeholder: "Enter secret access key" %>
+              </div>
+
+              <div class="col-12">
+                <%= label_tag "function_providers_config[aws_lambda][execution_role_arn]", "Execution Role ARN", class: "form-label" %>
+                <%= text_field_tag "function_providers_config[aws_lambda][execution_role_arn]",
+                                   current_config["execution_role_arn"],
+                                   class: "form-control",
+                                   placeholder: "arn:aws:iam::123456789:role/lambda-execution-role" %>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-flex gap-2">
+              <%= f.submit "Save Function Provider Settings", class: "btn btn-warning" %>
+              <%= link_to "Cancel", org_organization_settings_path(current_organization.slug), class: "btn btn-outline-secondary" %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card bg-light">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="bi bi-info-circle me-2"></i>
+              About Function Providers
+            </h6>
+            <p class="small mb-3">
+              Function providers enable agent functions to execute code in the cloud. Currently supported:
+            </p>
+            <ul class="small mb-3">
+              <li class="mb-2"><strong>AWS Lambda:</strong> Run functions as serverless Lambda functions</li>
+            </ul>
+            <div class="alert alert-warning small mb-0">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <strong>Note:</strong> The <strong>Functions</strong> feature flag must also be enabled under Feature Flags for this to take effect.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

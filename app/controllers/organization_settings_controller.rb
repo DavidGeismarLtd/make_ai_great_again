@@ -55,6 +55,39 @@ class OrganizationSettingsController < ApplicationController
     end
   end
 
+  # Function providers management
+  def function_providers
+    # Page for editing function provider settings (AWS Lambda, etc.)
+  end
+
+  def update_function_providers
+    if @organization_configuration.update(function_providers_config: function_providers_params)
+      redirect_to function_providers_org_organization_settings_path(current_organization.slug),
+                  notice: "Function provider settings updated successfully."
+    else
+      render :function_providers, status: :unprocessable_entity
+    end
+  end
+
+  # Assistant chatbot management
+  def assistant_chatbot
+    # Page for editing assistant chatbot settings
+    @configured_providers = ApiConfiguration.active.pluck(:provider).uniq
+  end
+
+  def update_assistant_chatbot
+    chatbot_config = assistant_chatbot_params
+    # Convert "true"/"false" string to boolean for JSONB storage
+    chatbot_config["enabled"] = chatbot_config["enabled"] == "true"
+
+    if @organization_configuration.update(assistant_chatbot_config: chatbot_config)
+      redirect_to assistant_chatbot_org_organization_settings_path(current_organization.slug),
+                  notice: "Assistant chatbot settings updated successfully."
+    else
+      render :assistant_chatbot, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_organization_configuration
@@ -80,5 +113,13 @@ class OrganizationSettingsController < ApplicationController
 
   def features_params
     params.require(:features_config).permit!.to_h
+  end
+
+  def function_providers_params
+    params.require(:function_providers_config).permit!.to_h
+  end
+
+  def assistant_chatbot_params
+    params.require(:assistant_chatbot_config).permit!.to_h
   end
 end

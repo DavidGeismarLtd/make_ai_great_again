@@ -42,6 +42,15 @@
             </li>
           <% end %>
 
+          <%# Functions Section - Only show if enabled in features %>
+          <% if PromptTracker.configuration.feature_enabled?(:functions) %>
+            <li class="nav-item">
+              <%= link_to org_prompt_tracker.functions_path(org_slug: current_organization.slug), class: "nav-link #{'active' if current_section == 'functions'}" do %>
+                <i class="bi bi-code-square"></i> Functions
+              <% end %>
+            </li>
+          <% end %>
+
           <%# Organizations - Future %>
           <%# <li class="nav-item"> %>
           <%#   <%= link_to organizations_path, class: "nav-link #{'active' if current_section == 'organizations'}" do %>

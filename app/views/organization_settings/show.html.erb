@@ -167,6 +167,105 @@
         </div>
       </div>
     </div>
+    <!-- Function Providers Card -->
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0">
+              <div class="bg-warning bg-opacity-10 rounded-3 p-3">
+                <i class="bi bi-cloud-arrow-up text-warning fs-3"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-1">Function Providers</h5>
+              <p class="text-muted small mb-0">
+                Configure cloud providers for executing agent functions
+              </p>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <h6 class="small text-uppercase text-muted mb-2">Configured Providers:</h6>
+            <ul class="list-unstyled mb-0">
+              <% aws_config = @organization_configuration.function_providers_config["aws_lambda"] %>
+              <li class="mb-2">
+                <div class="d-flex align-items-center">
+                  <% if aws_config.present? && aws_config["access_key_id"].present? %>
+                    <i class="bi bi-check-circle text-success me-2"></i>
+                  <% else %>
+                    <i class="bi bi-dash-circle text-muted me-2"></i>
+                  <% end %>
+                  <div>
+                    <strong>AWS Lambda</strong>
+                    <br>
+                    <small class="text-muted">
+                      <%= aws_config.present? && aws_config["region"].present? ? "Region: #{aws_config["region"]}" : "Not configured" %>
+                    </small>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <%= link_to function_providers_org_organization_settings_path(current_organization.slug),
+                      class: "btn btn-outline-warning w-100" do %>
+            <i class="bi bi-pencil me-2"></i>
+            Edit Function Providers
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assistant Chatbot Card -->
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0">
+              <div class="bg-purple bg-opacity-10 rounded-3 p-3" style="background-color: rgba(111, 66, 193, 0.1) !important;">
+                <i class="bi bi-chat-dots text-purple fs-3" style="color: #6f42c1 !important;"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-1">Assistant Chatbot</h5>
+              <p class="text-muted small mb-0">
+                Configure the built-in AI assistant chatbot
+              </p>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <h6 class="small text-uppercase text-muted mb-2">Status:</h6>
+            <ul class="list-unstyled mb-0">
+              <% chatbot_config = @organization_configuration.assistant_chatbot_config %>
+              <li class="mb-2">
+                <div class="d-flex align-items-center">
+                  <% if chatbot_config["enabled"].to_s == "true" %>
+                    <i class="bi bi-toggle-on text-success me-2 fs-5"></i>
+                  <% else %>
+                    <i class="bi bi-toggle-off text-muted me-2 fs-5"></i>
+                  <% end %>
+                  <div>
+                    <strong><%= chatbot_config["enabled"].to_s == "true" ? "Enabled" : "Disabled" %></strong>
+                    <br>
+                    <small class="text-muted">
+                      <%= chatbot_config.dig("model", "provider")&.titleize %> - <%= chatbot_config.dig("model", "model") %>
+                    </small>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <%= link_to assistant_chatbot_org_organization_settings_path(current_organization.slug),
+                      class: "btn btn-outline-secondary w-100" do %>
+            <i class="bi bi-pencil me-2"></i>
+            Edit Chatbot Settings
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Info Alert -->
@@ -180,8 +279,14 @@
         <p class="mb-2">
           <strong>Contexts:</strong> Define default LLM providers and models for different use cases (playground, LLM judge, dataset generation, etc.)
         </p>
+        <p class="mb-2">
+          <strong>Features:</strong> Enable or disable optional functionality like OpenAI Assistant sync, functions, monitoring, etc.
+        </p>
+        <p class="mb-2">
+          <strong>Function Providers:</strong> Configure cloud providers (AWS Lambda) for executing code-based agent functions.
+        </p>
         <p class="mb-0">
-          <strong>Features:</strong> Enable or disable optional functionality like OpenAI Assistant sync, experimental features, etc.
+          <strong>Assistant Chatbot:</strong> Enable and configure the built-in AI assistant that helps with prompt creation, testing, and navigation.
         </p>
       </div>
     </div>

@@ -1,0 +1,142 @@
+<% content_for :page_title, "Assistant Chatbot" %>
+
+<% content_for :breadcrumbs do %>
+  <%= render "shared/breadcrumbs", breadcrumbs: [
+    { name: current_organization.name, url: main_app.org_prompt_tracker_path(current_organization.slug) },
+    { name: "Settings", url: main_app.org_organization_settings_path(current_organization.slug) },
+    { name: "Assistant Chatbot", url: nil }
+  ] %>
+<% end %>
+
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="h2 mb-2">Assistant Chatbot</h1>
+      <p class="text-muted">
+        Configure the built-in AI assistant chatbot for <%= current_organization.name %>
+      </p>
+    </div>
+  </div>
+
+  <%= form_with url: update_assistant_chatbot_org_organization_settings_path(current_organization.slug),
+                method: :patch,
+                local: true do |f| %>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-body">
+            <% current_config = @organization_configuration.assistant_chatbot_config.presence ||
+                                OrganizationConfiguration::DEFAULT_ASSISTANT_CHATBOT.deep_stringify_keys %>
+            <% model_config = current_config.dig("model") || {} %>
+
+            <h5 class="mb-3">
+              <i class="bi bi-chat-dots-fill text-purple me-2"></i>
+              Chatbot Configuration
+            </h5>
+
+            <div class="row g-3"
+                 data-controller="context-form"
+                 data-context-form-provider-apis-value="<%= provider_apis_json %>"
+                 data-context-form-provider-models-value="<%= provider_models_json %>">
+              <!-- Enabled toggle -->
+              <div class="col-12">
+                <div class="form-check form-switch">
+                  <%= hidden_field_tag "assistant_chatbot_config[enabled]", "false" %>
+                  <%= check_box_tag "assistant_chatbot_config[enabled]",
+                                    "true",
+                                    current_config["enabled"].to_s == "true",
+                                    class: "form-check-input",
+                                    style: "width: 3rem; height: 1.5rem; cursor: pointer;",
+                                    id: "assistant_chatbot_enabled" %>
+                  <%= label_tag "assistant_chatbot_enabled", "Enable Assistant Chatbot", class: "form-check-label ms-2 fw-bold" %>
+                </div>
+                <p class="text-muted small mt-1 mb-0">
+                  When enabled, the AI assistant chatbot will be available in the UI.
+                </p>
+              </div>
+
+              <hr>
+
+              <!-- Provider -->
+              <div class="col-md-6">
+                <%= label_tag "assistant_chatbot_config[model][provider]", "Provider", class: "form-label" %>
+                <%= select_tag "assistant_chatbot_config[model][provider]",
+                               options_for_select(
+                                 @configured_providers.map { |p| [p.titleize, p] },
+                                 model_config["provider"]
+                               ),
+                               class: "form-select",
+                               data: {
+                                 context_form_target: "providerSelect",
+                                 action: "change->context-form#providerChanged"
+                               } %>
+                <% if @configured_providers.empty? %>
+                  <div class="form-text text-warning">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    No API keys configured. <%= link_to "Add API keys", org_api_configurations_path(current_organization.slug), class: "text-decoration-none" %>
+                  </div>
+                <% end %>
+              </div>
+
+              <!-- API -->
+              <div class="col-md-6">
+                <%= label_tag "assistant_chatbot_config[model][api]", "API", class: "form-label" %>
+                <%= select_tag "assistant_chatbot_config[model][api]",
+                               options_for_select(
+                                 apis_for_provider(model_config["provider"] || "openai").map { |api| [api[:label], api[:value]] },
+                                 model_config["api"]
+                               ),
+                               class: "form-select",
+                               data: { context_form_target: "apiSelect" } %>
+              </div>
+
+              <!-- Model -->
+              <div class="col-md-6">
+                <%= label_tag "assistant_chatbot_config[model][model]", "Model", class: "form-label" %>
+                <%= select_tag "assistant_chatbot_config[model][model]",
+                               options_for_select(
+                                 models_for_provider(model_config["provider"] || "openai").map { |m| [m[:label], m[:value]] },
+                                 model_config["model"]
+                               ),
+                               class: "form-select",
+                               data: { context_form_target: "modelSelect" } %>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-flex gap-2">
+              <%= f.submit "Save Chatbot Settings", class: "btn btn-primary" %>
+              <%= link_to "Cancel", org_organization_settings_path(current_organization.slug), class: "btn btn-outline-secondary" %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card bg-light">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="bi bi-info-circle me-2"></i>
+              About Assistant Chatbot
+            </h6>
+            <p class="small mb-3">
+              The assistant chatbot provides an AI-powered helper within the UI that can assist with:
+            </p>
+            <ul class="small mb-3">
+              <li class="mb-1">Creating and editing prompts</li>
+              <li class="mb-1">Generating test cases</li>
+              <li class="mb-1">Running tests</li>
+              <li class="mb-1">Searching and navigating the platform</li>
+            </ul>
+            <div class="alert alert-info small mb-0">
+              <i class="bi bi-key me-2"></i>
+              <strong>Requires:</strong> An API key for the selected provider must be configured in API Configurations.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

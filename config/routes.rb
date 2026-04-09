@@ -47,6 +47,10 @@ Rails.application.routes.draw do
         patch :update_contexts
         get :features
         patch :update_features
+        get :function_providers
+        patch :update_function_providers
+        get :assistant_chatbot
+        patch :update_assistant_chatbot
       end
     end
 

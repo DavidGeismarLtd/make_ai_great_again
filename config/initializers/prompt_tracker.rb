@@ -65,7 +65,13 @@ PromptTracker.configure do |config|
       contexts: build_contexts_for_organization(org),
 
       # FEATURES: Fetch feature flags from database
-      features: build_features_for_organization(org)
+      features: build_features_for_organization(org),
+
+      # FUNCTION PROVIDERS: Fetch function provider settings from database
+      function_providers: build_function_providers_for_organization(org),
+
+      # ASSISTANT CHATBOT: Fetch assistant chatbot settings from database
+      assistant_chatbot: build_assistant_chatbot_for_organization(org)
     }
 
     Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] Configuration built successfully"
@@ -141,7 +147,9 @@ PromptTracker.configure do |config|
   #
   # Organizations can customize these via Organization Settings UI.
   config.features = {
-    openai_assistant_sync: true  # Show "Sync OpenAI Assistants" button in Testing Dashboard
+    openai_assistant_sync: true,  # Show "Sync OpenAI Assistants" button in Testing Dashboard
+    monitoring: true,             # Enable the Monitoring section
+    functions: true               # Enable the Functions section (requires function provider config)
   }
 
   # ===========================================================================
@@ -156,6 +164,31 @@ PromptTracker.configure do |config|
     openai: { api_key: ENV["OPENAI_API_KEY"] },
     anthropic: { api_key: ENV["ANTHROPIC_API_KEY"] },
     google: { api_key: ENV["GOOGLE_API_KEY"] }
+  }
+
+  # ===========================================================================
+  # 6. STATIC FALLBACK: FUNCTION PROVIDERS
+  # ===========================================================================
+  config.function_providers = {
+    aws_lambda: {
+      region: ENV.fetch("AWS_REGION", "us-east-1"),
+      access_key_id: ENV["AWS_ACCESS_KEY_ID"],
+      secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"],
+      execution_role_arn: ENV["LAMBDA_EXECUTION_ROLE_ARN"],
+      function_prefix: ENV.fetch("LAMBDA_FUNCTION_PREFIX", "prompt-tracker")
+    }
+  }
+
+  # ===========================================================================
+  # 7. STATIC FALLBACK: ASSISTANT CHATBOT
+  # ===========================================================================
+  config.assistant_chatbot = {
+    enabled: false,
+    model: {
+      provider: :openai,
+      api: :chat_completions,
+      model: "gpt-4o"
+    }
   }
 end
 
@@ -236,4 +269,23 @@ def build_features_for_organization(org)
 
   # Convert string keys to symbols for PromptTracker
   org_config.features_config.deep_symbolize_keys
+end
+
+# Build function providers hash from database
+def build_function_providers_for_organization(org)
+  org_config = org.organization_configuration
+  return {} unless org_config
+
+  org_config.function_providers_config.deep_symbolize_keys
+end
+
+# Build assistant chatbot hash from database
+def build_assistant_chatbot_for_organization(org)
+  org_config = org.organization_configuration
+  return {} unless org_config
+
+  config = org_config.assistant_chatbot_config.deep_symbolize_keys
+  # Ensure :enabled is a proper boolean (JSONB may store "true"/"false" strings)
+  config[:enabled] = config[:enabled] == true || config[:enabled] == "true"
+  config
 end

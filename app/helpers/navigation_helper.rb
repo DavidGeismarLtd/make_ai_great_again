@@ -7,7 +7,7 @@ module NavigationHelper
   # @return [String] two-letter initials (e.g., "DG" for David Geismar)
   def user_initials(user)
     return "?" unless user&.first_name && user&.last_name
-    
+
     "#{user.first_name[0]}#{user.last_name[0]}".upcase
   end
 
@@ -45,6 +45,8 @@ module NavigationHelper
       "testing"
     elsif controller_path.start_with?("prompt_tracker/monitoring")
       "monitoring"
+    elsif controller_path.start_with?("prompt_tracker/functions")
+      "functions"
     elsif controller_path.start_with?("organizations")
       "organizations"
     elsif controller_path.start_with?("api_configurations")
@@ -64,7 +66,7 @@ module NavigationHelper
   # @return [ActiveRecord::Relation]
   def user_organizations
     return [] unless user_signed_in?
-    
+
     ActsAsTenant.without_tenant do
       current_user.organizations.order(:name)
     end
@@ -76,4 +78,3 @@ module NavigationHelper
     user_organizations.count > 1
   end
 end
-

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_11_074329) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_09_053001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -28,9 +28,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_074329) do
   end
 
   create_table "organization_configurations", force: :cascade do |t|
+    t.jsonb "assistant_chatbot_config", default: {}, null: false
     t.jsonb "contexts_config", default: {}, null: false
     t.datetime "created_at", null: false
     t.jsonb "features_config", default: {}, null: false
+    t.jsonb "function_providers_config", default: {}, null: false
     t.bigint "organization_id", null: false
     t.datetime "updated_at", null: false
     t.index ["organization_id"], name: "index_organization_configurations_on_organization_id", unique: true

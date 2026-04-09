@@ -28,7 +28,8 @@
           <div class="card-body">
             <% feature_descriptions = {
               openai_assistant_sync: "Show 'Sync OpenAI Assistants' button in Testing Dashboard. Allows syncing prompts with OpenAI Assistants API.",
-              monitoring: "Enable the Monitoring section for tracking production LLM calls and performance metrics."
+              monitoring: "Enable the Monitoring section for tracking production LLM calls and performance metrics.",
+              functions: "Enable the Functions section for code-based agent functions. Requires AWS Lambda (or another function provider) to be configured."
             } %>
 
             <% OrganizationConfiguration::DEFAULT_FEATURES.each do |feature_name, default_value| %>
