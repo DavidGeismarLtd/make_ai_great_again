@@ -21,7 +21,8 @@ begin
     '06_prompt_tracker_agents',
     '07_prompt_tracker_tests',
     '08_prompt_tracker_datasets',
-    '09_monitoring_api_keys'
+    '09_monitoring_api_keys',
+    '10_function_definitions'
   ]
 
   seed_files.each do |seed_file|
@@ -49,6 +50,7 @@ begin
   puts "  • Evaluator Configs: #{PromptTracker::EvaluatorConfig.count}"
   puts "  • Datasets: #{PromptTracker::Dataset.count}"
   puts "  • Dataset Rows: #{PromptTracker::DatasetRow.count}"
+  puts "  • Function Definitions: #{PromptTracker::FunctionDefinition.count}"
   puts ""
   puts "🔐 Login Credentials:"
   puts "  Admin: admin@example.com / password123"

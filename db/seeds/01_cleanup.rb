@@ -29,6 +29,10 @@ delete_if_table_exists.call(:prompt_tracker_prompt_test_suite_runs)
 delete_if_table_exists.call(:prompt_tracker_prompt_test_suites)
 delete_if_table_exists.call(:prompt_tracker_spans)
 delete_if_table_exists.call(:prompt_tracker_traces)
+delete_if_table_exists.call(:prompt_tracker_function_executions)
+delete_if_table_exists.call(:prompt_tracker_deployed_agent_functions)
+delete_if_table_exists.call(:prompt_tracker_function_definition_environment_variables)
+delete_if_table_exists.call(:prompt_tracker_function_definitions)
 
 # Clean up host app data (order matters due to foreign key constraints)
 MonitoringApiKey.delete_all
