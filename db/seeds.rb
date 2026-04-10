@@ -52,14 +52,22 @@ begin
   puts "  • Dataset Rows: #{PromptTracker::DatasetRow.count}"
   puts "  • Function Definitions: #{PromptTracker::FunctionDefinition.count}"
   puts ""
-  puts "🔐 Login Credentials:"
-  puts "  Admin: admin@example.com / password123"
-  puts "  Demo:  demo@example.com / password123"
-  puts ""
-  puts "🏢 Organizations:"
-  puts "  • Acme Corporation (slug: acme-corp)"
-  puts "  • Tech Startup Inc (slug: tech-startup)"
-  puts "  • Default Organization (slug: default)"
+  puts "🔐 User Accounts:"
+  puts "-" * 80
+  puts "  %-30s %-15s %-10s %s" % [ "EMAIL", "PASSWORD", "ROLE", "ORGANIZATIONS" ]
+  puts "-" * 80
+  User.find_each do |user|
+    memberships = user.organization_memberships.includes(:organization).map do |m|
+      "#{m.organization.name} (#{m.role})"
+    end
+    puts "  %-30s %-15s %-10s %s" % [
+      user.email,
+      "password123",
+      user.role,
+      memberships.join(", ")
+    ]
+  end
+  puts "-" * 80
   puts ""
   puts "=" * 80
 ensure

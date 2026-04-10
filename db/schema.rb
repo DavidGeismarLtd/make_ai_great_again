@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_09_123325) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_10_123436) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,6 +49,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_123325) do
     t.datetime "created_at", null: false
     t.jsonb "features_config", default: {}, null: false
     t.jsonb "function_providers_config", default: {}, null: false
+    t.jsonb "mcp_servers_config", default: {}, null: false
     t.bigint "organization_id", null: false
     t.datetime "updated_at", null: false
     t.index ["organization_id"], name: "index_organization_configurations_on_organization_id", unique: true
@@ -144,6 +145,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_123325) do
     t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.string "created_by"
+    t.jsonb "mcp_servers", default: []
     t.jsonb "model_config", default: {}
     t.text "notes"
     t.bigint "organization_id", null: false
@@ -378,6 +380,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_123325) do
     t.datetime "executed_at", null: false
     t.integer "execution_time_ms"
     t.bigint "function_definition_id"
+    t.string "function_name"
     t.bigint "organization_id", null: false
     t.string "planning_step_id"
     t.jsonb "result"

@@ -266,6 +266,57 @@
         </div>
       </div>
     </div>
+    <!-- MCP Servers Card -->
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <div class="flex-shrink-0">
+              <div class="bg-teal bg-opacity-10 rounded-3 p-3" style="background-color: rgba(32, 201, 151, 0.1) !important;">
+                <i class="bi bi-plug text-teal fs-3" style="color: #20c997 !important;"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+              <h5 class="card-title mb-1">MCP Servers</h5>
+              <p class="text-muted small mb-0">
+                External tools and resources for AI agents
+              </p>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <h6 class="small text-uppercase text-muted mb-2">Available Servers:</h6>
+            <ul class="list-unstyled mb-0">
+              <% mcp_config = @organization_configuration.mcp_servers_config %>
+              <% { "filesystem" => "Filesystem", "slack" => "Slack" }.each do |key, label| %>
+                <li class="mb-2">
+                  <div class="d-flex align-items-center">
+                    <% if mcp_config.dig(key, "enabled").to_s == "true" %>
+                      <i class="bi bi-toggle-on text-success me-2 fs-5"></i>
+                    <% else %>
+                      <i class="bi bi-toggle-off text-muted me-2 fs-5"></i>
+                    <% end %>
+                    <div>
+                      <strong><%= label %></strong>
+                      <br>
+                      <small class="text-muted">
+                        <%= mcp_config.dig(key, "enabled").to_s == "true" ? "Enabled" : "Disabled" %>
+                      </small>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+
+          <%= link_to mcp_servers_org_organization_settings_path(current_organization.slug),
+                      class: "btn btn-outline-secondary w-100" do %>
+            <i class="bi bi-pencil me-2"></i>
+            Edit MCP Servers
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Info Alert -->
@@ -285,8 +336,11 @@
         <p class="mb-2">
           <strong>Function Providers:</strong> Configure cloud providers (AWS Lambda) for executing code-based agent functions.
         </p>
-        <p class="mb-0">
+        <p class="mb-2">
           <strong>Assistant Chatbot:</strong> Enable and configure the built-in AI assistant that helps with prompt creation, testing, and navigation.
+        </p>
+        <p class="mb-0">
+          <strong>MCP Servers:</strong> Enable external tool servers (Filesystem, Slack) that extend AI agent capabilities via the Model Context Protocol.
         </p>
       </div>
     </div>

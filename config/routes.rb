@@ -65,6 +65,8 @@ Rails.application.routes.draw do
         patch :update_function_providers
         get :assistant_chatbot
         patch :update_assistant_chatbot
+        get :mcp_servers
+        patch :update_mcp_servers
       end
     end
 

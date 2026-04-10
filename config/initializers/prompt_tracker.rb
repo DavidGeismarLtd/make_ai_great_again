@@ -15,6 +15,27 @@
 # This ensures complete data isolation and allows each organization to have
 # their own API keys, context defaults, and feature flags.
 
+# Global MCP server definitions (transport, command, args).
+# Defined outside PromptTracker.configure so that build_mcp_servers_for_organization
+# can reference them without triggering a circular call through the configuration_provider.
+GLOBAL_MCP_SERVER_DEFINITIONS = {
+  filesystem: {
+    transport: "stdio",
+    command: "npx",
+    args: [ "-y", "@modelcontextprotocol/server-filesystem", "/tmp", Rails.root.to_s ],
+    env: {}
+  },
+  slack: {
+    transport: "stdio",
+    command: "npx",
+    args: [ "-y", "@modelcontextprotocol/server-slack" ],
+    env: {
+      "SLACK_BOT_TOKEN" => ENV["SLACK_BOT_TOKEN"],
+      "SLACK_TEAM_ID" => ENV["SLACK_TEAM_ID"]
+    }
+  }
+}.freeze
+
 PromptTracker.configure do |config|
   # ===========================================================================
   # 1. STATIC SETTINGS (applied to all requests)
@@ -71,7 +92,10 @@ PromptTracker.configure do |config|
       function_providers: build_function_providers_for_organization(org),
 
       # ASSISTANT CHATBOT: Fetch assistant chatbot settings from database
-      assistant_chatbot: build_assistant_chatbot_for_organization(org)
+      assistant_chatbot: build_assistant_chatbot_for_organization(org),
+
+      # MCP SERVERS: Fetch MCP server settings from database
+      mcp_servers: build_mcp_servers_for_organization(org)
     }
 
     Rails.logger.info "[MakeAIGreatAgain] [PromptTracker Config] Configuration built successfully"
@@ -97,99 +121,18 @@ PromptTracker.configure do |config|
   }
 
   # ===========================================================================
-  # 3. STATIC FALLBACK: CONTEXTS
+  # 3. STATIC FALLBACKS (no-tenant context only)
   # ===========================================================================
-  # Usage scenarios with their default selections.
-  # These are used when configuration_provider returns nil/empty or doesn't
-  # include a contexts key (e.g., console, background jobs without tenant).
-  #
-  # Organizations can customize these via Organization Settings UI.
-  config.contexts = {
-    playground: {
-      description: "Prompt version testing in the playground",
-      default_provider: :openai,
-      default_api: :chat_completions,
-      default_model: "gpt-4o"
-    },
-    llm_judge: {
-      description: "LLM-as-judge evaluation of responses",
-      default_provider: :openai,
-      default_api: :chat_completions,
-      default_model: "gpt-4o"
-    },
-    dataset_generation: {
-      description: "Generating test dataset rows via LLM",
-      default_provider: :openai,
-      default_api: :chat_completions,
-      default_model: "gpt-4o"
-    },
-    prompt_generation: {
-      description: "AI-assisted prompt creation and enhancement",
-      default_provider: :openai,
-      default_api: :chat_completions,
-      default_model: "gpt-4o-mini"
-    },
-    test_generation: {
-      description: "AI-powered test case generation for prompts",
-      default_provider: :openai,
-      default_api: :chat_completions,
-      default_model: "gpt-4o",
-      default_temperature: 0.7
-    }
-  }
-
-  # ===========================================================================
-  # 4. STATIC FALLBACK: FEATURE FLAGS
-  # ===========================================================================
-  # Feature flags that control optional functionality.
-  # These are used when configuration_provider returns nil/empty or doesn't
-  # include a features key (e.g., console, background jobs without tenant).
-  #
-  # Organizations can customize these via Organization Settings UI.
-  config.features = {
-    openai_assistant_sync: true,  # Show "Sync OpenAI Assistants" button in Testing Dashboard
-    monitoring: true,             # Enable the Monitoring section
-    functions: true               # Enable the Functions section (requires function provider config)
-  }
-
-  # ===========================================================================
-  # 5. STATIC FALLBACK: PROVIDERS
-  # ===========================================================================
-  # Fallback API keys from environment variables.
-  # These are used when configuration_provider returns nil/empty or doesn't
-  # include a providers key.
-  #
-  # In production, these should be empty since we use database-stored keys.
-  config.providers = {
-    openai: { api_key: ENV["OPENAI_API_KEY"] },
-    anthropic: { api_key: ENV["ANTHROPIC_API_KEY"] },
-    google: { api_key: ENV["GOOGLE_API_KEY"] }
-  }
-
-  # ===========================================================================
-  # 6. STATIC FALLBACK: FUNCTION PROVIDERS
-  # ===========================================================================
-  config.function_providers = {
-    aws_lambda: {
-      region: ENV.fetch("AWS_REGION", "us-east-1"),
-      access_key_id: ENV["AWS_ACCESS_KEY_ID"],
-      secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"],
-      execution_role_arn: ENV["LAMBDA_EXECUTION_ROLE_ARN"],
-      function_prefix: ENV.fetch("LAMBDA_FUNCTION_PREFIX", "prompt-tracker")
-    }
-  }
-
-  # ===========================================================================
-  # 7. STATIC FALLBACK: ASSISTANT CHATBOT
-  # ===========================================================================
-  config.assistant_chatbot = {
-    enabled: false,
-    model: {
-      provider: :openai,
-      api: :chat_completions,
-      model: "gpt-4o"
-    }
-  }
+  # These are ONLY used when no tenant is set (e.g., Rails console, background
+  # jobs without tenant context). In that case configuration_provider returns {}
+  # and these kick in. They are intentionally empty/safe — all real config lives
+  # in the database per organization.
+  config.contexts = {}
+  config.features = {}
+  config.providers = {}
+  config.function_providers = {}
+  config.mcp_servers = {}
+  config.assistant_chatbot = { enabled: false }
 end
 
 # ===========================================================================
@@ -288,4 +231,35 @@ def build_assistant_chatbot_for_organization(org)
   # Ensure :enabled is a proper boolean (JSONB may store "true"/"false" strings)
   config[:enabled] = config[:enabled] == true || config[:enabled] == "true"
   config
+end
+
+# Build MCP servers hash from database
+# Merges org-level enabled flags and credentials with the global server definitions.
+# Only returns servers that the org has enabled.
+def build_mcp_servers_for_organization(org)
+  org_config = org.organization_configuration
+  return {} unless org_config
+
+  mcp_org_config = org_config.mcp_servers_config.deep_symbolize_keys
+  global_servers = GLOBAL_MCP_SERVER_DEFINITIONS
+
+  enabled_servers = {}
+
+  mcp_org_config.each do |server_name, org_settings|
+    next unless org_settings[:enabled] == true || org_settings[:enabled] == "true"
+    next unless global_servers.key?(server_name)
+
+    server_def = global_servers[server_name].deep_dup
+
+    # Override env vars with org-specific credentials
+    if server_name == :slack
+      server_def[:env] ||= {}
+      server_def[:env]["SLACK_BOT_TOKEN"] = org_settings[:slack_bot_token] if org_settings[:slack_bot_token].present?
+      server_def[:env]["SLACK_TEAM_ID"] = org_settings[:slack_team_id] if org_settings[:slack_team_id].present?
+    end
+
+    enabled_servers[server_name] = server_def
+  end
+
+  enabled_servers
 end

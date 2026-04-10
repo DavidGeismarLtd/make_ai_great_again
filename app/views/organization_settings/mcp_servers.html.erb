@@ -1,0 +1,128 @@
+<% content_for :page_title, "MCP Servers" %>
+
+<% content_for :breadcrumbs do %>
+  <%= render "shared/breadcrumbs", breadcrumbs: [
+    { name: current_organization.name, url: main_app.org_prompt_tracker_path(current_organization.slug) },
+    { name: "Settings", url: main_app.org_organization_settings_path(current_organization.slug) },
+    { name: "MCP Servers", url: nil }
+  ] %>
+<% end %>
+
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="h2 mb-2">MCP Servers</h1>
+      <p class="text-muted">
+        Enable or disable Model Context Protocol (MCP) servers for <%= current_organization.name %>.
+        MCP servers provide external tools and resources to AI agents.
+      </p>
+    </div>
+  </div>
+
+  <%= form_with url: update_mcp_servers_org_organization_settings_path(current_organization.slug),
+                method: :patch,
+                local: true do |f| %>
+
+    <div class="row">
+      <div class="col-lg-8">
+        <% current_config = @organization_configuration.mcp_servers_config.presence ||
+                            OrganizationConfiguration::DEFAULT_MCP_SERVERS.deep_stringify_keys %>
+
+        <!-- Filesystem Server -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-folder2-open text-primary fs-4 me-3"></i>
+              <div class="flex-grow-1">
+                <h5 class="mb-0">Filesystem</h5>
+                <small class="text-muted">Provides file read/write tools to AI agents</small>
+              </div>
+              <div class="form-check form-switch">
+                <%= hidden_field_tag "mcp_servers_config[filesystem][enabled]", "false" %>
+                <%= check_box_tag "mcp_servers_config[filesystem][enabled]",
+                                  "true",
+                                  current_config.dig("filesystem", "enabled").to_s == "true",
+                                  class: "form-check-input",
+                                  style: "width: 3rem; height: 1.5rem; cursor: pointer;" %>
+              </div>
+            </div>
+            <div class="alert alert-light mb-0">
+              <small>
+                <i class="bi bi-info-circle me-1"></i>
+                No additional configuration needed. The filesystem server grants agents access to read and write files in allowed directories.
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slack Server -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              <i class="bi bi-slack text-success fs-4 me-3"></i>
+              <div class="flex-grow-1">
+                <h5 class="mb-0">Slack</h5>
+                <small class="text-muted">Provides Slack messaging tools to AI agents</small>
+              </div>
+              <div class="form-check form-switch">
+                <%= hidden_field_tag "mcp_servers_config[slack][enabled]", "false" %>
+                <%= check_box_tag "mcp_servers_config[slack][enabled]",
+                                  "true",
+                                  current_config.dig("slack", "enabled").to_s == "true",
+                                  class: "form-check-input",
+                                  style: "width: 3rem; height: 1.5rem; cursor: pointer;",
+                                  data: { bs_toggle: "collapse", bs_target: "#slack-config" } %>
+              </div>
+            </div>
+
+            <div id="slack-config" class="<%= current_config.dig("slack", "enabled").to_s == "true" ? "" : "collapse" %>">
+              <div class="row g-3 mt-1">
+                <div class="col-md-6">
+                  <%= label_tag "mcp_servers_config[slack][slack_bot_token]", "Slack Bot Token", class: "form-label" %>
+                  <%= text_field_tag "mcp_servers_config[slack][slack_bot_token]",
+                                     current_config.dig("slack", "slack_bot_token"),
+                                     class: "form-control font-monospace",
+                                     placeholder: "xoxb-..." %>
+                  <small class="text-muted">Your Slack app's Bot User OAuth Token</small>
+                </div>
+                <div class="col-md-6">
+                  <%= label_tag "mcp_servers_config[slack][slack_team_id]", "Slack Team ID", class: "form-label" %>
+                  <%= text_field_tag "mcp_servers_config[slack][slack_team_id]",
+                                     current_config.dig("slack", "slack_team_id"),
+                                     class: "form-control font-monospace",
+                                     placeholder: "T0123456789" %>
+                  <small class="text-muted">Your Slack workspace Team ID</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <%= f.submit "Save MCP Server Settings", class: "btn btn-primary" %>
+          <%= link_to "Cancel", org_organization_settings_path(current_organization.slug), class: "btn btn-outline-secondary" %>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card bg-light border-0">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="bi bi-question-circle me-1"></i>
+              About MCP Servers
+            </h6>
+            <p class="small text-muted mb-2">
+              MCP (Model Context Protocol) servers extend AI agent capabilities by providing external tools.
+            </p>
+            <p class="small text-muted mb-2">
+              <strong>Filesystem:</strong> Lets agents read and write files in sandboxed directories.
+            </p>
+            <p class="small text-muted mb-0">
+              <strong>Slack:</strong> Lets agents send messages, read channels, and interact with your Slack workspace. Requires a Slack Bot Token and Team ID.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

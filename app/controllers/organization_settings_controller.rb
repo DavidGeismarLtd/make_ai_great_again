@@ -88,6 +88,26 @@ class OrganizationSettingsController < ApplicationController
     end
   end
 
+  # MCP servers management
+  def mcp_servers
+    # Page for enabling/disabling MCP servers and configuring credentials
+  end
+
+  def update_mcp_servers
+    mcp_config = mcp_servers_params
+    # Convert "true"/"false" strings to booleans for enabled flags
+    mcp_config.each do |_server, settings|
+      settings["enabled"] = settings["enabled"] == "true" if settings.key?("enabled")
+    end
+
+    if @organization_configuration.update(mcp_servers_config: mcp_config)
+      redirect_to mcp_servers_org_organization_settings_path(current_organization.slug),
+                  notice: "MCP server settings updated successfully."
+    else
+      render :mcp_servers, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_organization_configuration
@@ -121,5 +141,9 @@ class OrganizationSettingsController < ApplicationController
 
   def assistant_chatbot_params
     params.require(:assistant_chatbot_config).permit!.to_h
+  end
+
+  def mcp_servers_params
+    params.require(:mcp_servers_config).permit!.to_h
   end
 end

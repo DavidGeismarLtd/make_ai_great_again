@@ -238,6 +238,53 @@ ActsAsTenant.with_tenant(acme_corp) do
 
   puts "  ✓ Created code review agents (1 agent, 1 version)"
 
+  # ============================================================================
+  # 4. News Analyst Agent
+  # ============================================================================
+  puts "  Creating news analyst agent..."
+
+  news_analyst = PromptTracker::Agent.create!(
+    organization_id: acme_corp.id,
+    name: "news_analyst",
+    description: "Analyzes and summarizes the latest news on a specific topic",
+    category: "research",
+    tags: [ "news", "analysis", "summarization", "mcp" ],
+    created_by: "research-team@example.com"
+  )
+
+  # Version 1 - Active, with filesystem + web_search MCP servers
+  news_analyst_v1 = news_analyst.agent_versions.create!(
+    organization_id: acme_corp.id,
+    system_prompt: <<~SYSTEM.strip,
+      You are an expert news analyst. Your role is to:
+      1. Search for the latest news on the given topic using web search
+      2. Analyze multiple sources for accuracy and bias
+      3. Summarize key developments, trends, and implications
+      4. Save your analysis to the filesystem for future reference
+
+      Always cite your sources and provide balanced, factual reporting.
+      Prioritize recent and authoritative sources.
+    SYSTEM
+    user_prompt: "Research and analyze the latest news on the following topic: {{topic}}\n\nProvide a comprehensive summary including key developments, major players involved, and potential implications.",
+    version_number: 1,
+    status: "active",
+    variables_schema: [
+      { "name" => "topic", "type" => "string", "required" => true }
+    ],
+    model_config: {
+      "provider" => "openai",
+      "api" => "chat_completions",
+      "model" => "gpt-4o",
+      "temperature" => 0.5,
+      "max_tokens" => 2000
+    },
+    mcp_servers: [ "filesystem", "web_search" ],
+    notes: "Uses filesystem MCP to save reports and web search MCP to find latest news",
+    created_by: "research-team@example.com"
+  )
+
+  puts "  ✓ Created news analyst agent (1 agent, 1 version, MCP: filesystem + web_search)"
+
   # Store for use in other seed files
   SeedData.prompt_versions = {
     support_greeting_v1: support_greeting_v1,
@@ -247,7 +294,8 @@ ActsAsTenant.with_tenant(acme_corp) do
     support_greeting_v5: support_greeting_v5,
     email_summary_v1: email_summary_v1,
     email_summary_v2: email_summary_v2,
-    code_review_v1: code_review_v1
+    code_review_v1: code_review_v1,
+    news_analyst_v1: news_analyst_v1
   }
 
   puts "\n  ✅ Total: #{PromptTracker::Agent.count} agents with #{PromptTracker::AgentVersion.count} versions"

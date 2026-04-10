@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/DavidGeismarLtd/PromptTracker.git
-  revision: 75d3cd355e3defbb718c31ee8f60c7b704f67239
+  revision: 25aca093979ed424737960d0a267c5a72a4d933c
   specs:
     prompt_tracker (0.1.0)
       aws-sdk-lambda (~> 1.0)
