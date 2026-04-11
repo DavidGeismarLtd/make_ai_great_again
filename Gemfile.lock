@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/DavidGeismarLtd/PromptTracker.git
-  revision: 25aca093979ed424737960d0a267c5a72a4d933c
+  revision: 2e8169cb044861d09547786d6342b5039a987837
   specs:
     prompt_tracker (0.1.0)
       aws-sdk-lambda (~> 1.0)
@@ -9,6 +9,7 @@ GIT
       kaminari (~> 1.2)
       liquid (~> 5.5)
       rails (>= 7.2.3)
+      ruby-openai (~> 7.0)
       rubyzip (~> 2.3)
       stimulus-rails
       turbo-rails
@@ -454,6 +455,10 @@ GEM
       rubocop (>= 1.72)
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
+    ruby-openai (7.4.0)
+      event_stream_parser (>= 0.3.0, < 2.0.0)
+      faraday (>= 1)
+      faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
     ruby-vips (2.3.0)
       ffi (~> 1.12)
