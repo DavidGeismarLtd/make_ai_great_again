@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/DavidGeismarLtd/PromptTracker.git
-  revision: a130ba14c45d448a129a8283700b2c4766d694c8
+  revision: 9620d3defe44689d008869240fce3fb519300c93
   specs:
     prompt_tracker (0.1.0)
       aws-sdk-lambda (~> 1.0)
@@ -97,7 +97,7 @@ GEM
       public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1237.0)
+    aws-partitions (1.1238.0)
     aws-sdk-core (3.244.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
@@ -392,7 +392,7 @@ GEM
       tsort (>= 0.2)
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
-    rake (13.3.1)
+    rake (13.4.1)
     rdoc (7.2.0)
       erb
       psych (>= 4.0.0)
