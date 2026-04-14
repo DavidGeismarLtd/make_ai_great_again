@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/DavidGeismarLtd/PromptTracker.git
-  revision: ebc7c9d0d70e965193355a0dc119d20c9f0aa2a5
+  revision: 08b6a35a31523caf18876bfdb3576b7df133224e
   specs:
     prompt_tracker (0.1.0)
       aws-sdk-lambda (~> 1.0)
@@ -10,6 +10,7 @@ GIT
       liquid (~> 5.5)
       rails (>= 7.2.3)
       ruby-openai (~> 8.0)
+      ruby_llm
       rubyzip (~> 2.3)
       stimulus-rails
       turbo-rails
@@ -272,7 +273,7 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
-    minitest (6.0.3)
+    minitest (6.0.4)
       drb (~> 2.0)
       prism (~> 1.5)
     msgpack (1.8.0)
