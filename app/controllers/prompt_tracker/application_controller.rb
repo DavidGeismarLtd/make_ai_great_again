@@ -23,5 +23,27 @@ module PromptTracker
     #
     # Note: URL generation for multi-tenant routes is handled by the PromptTracker gem's
     # url_options_provider configuration (see config/initializers/prompt_tracker.rb)
+
+    private
+
+    # Paginate a scope using Kaminari, bypassing will_paginate conflicts.
+    # Re-declared here because the gem's ApplicationController (which defines this method)
+    # is replaced by this override. Delegates to the model's pt_paginate class method
+    # provided by PromptTracker::KaminariPagination.
+    def pt_paginate(scope, per_page: 25)
+      scope.model.pt_paginate(scope, page: params[:page], per_page: per_page)
+    end
+
+    # Override default_url_options to support multi-tenant mounting.
+    # Re-declared here because the gem's ApplicationController is replaced by this override.
+    def default_url_options
+      base_options = super
+
+      if PromptTracker.configuration.url_options_provider
+        base_options.merge(PromptTracker.configuration.url_options_provider.call || {})
+      else
+        base_options
+      end
+    end
   end
 end
