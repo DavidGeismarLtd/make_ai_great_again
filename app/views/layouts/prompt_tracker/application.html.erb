@@ -6,7 +6,7 @@
   <%= yield :title %> - AgentsOnRails
 <% end %>
 
-<% content_for :breadcrumbs do %>
+<% content_for :breadcrumbs, flush: true do %>
   <%= yield :breadcrumbs %>
 <% end %>
 
